@@ -10,15 +10,15 @@ Cada utilizador terá acesso à sua própria área pessoal, onde poderá consult
 
 ##Funcionalidades
 
-1. Registo e autenticação de utilizadores
-2. Gestão de perfil
-3. Gestão de tarefas
-4. Gestão de eventos
-5. Gestão de objetivos pessoais
-6. Associação de tarefas a objetivos
-7. Gestão de receitas e despesas
-8. Organização através de categorias e tags
-9. Dashboard com resumo da informação mais importante
+1.Registo e autenticação de utilizadores  
+2.Gestão de perfil  
+3.Gestão de tarefas  
+4.Gestão de eventos  
+5.Gestão de objetivos pessoais  
+6.Associação de tarefas a objetivos
+7.Gestão de receitas e despesas
+8.Organização através de categorias e tags
+9.Dashboard com resumo da informação mais importante
 10.Consulta de tarefas pendentes e em atraso
 11.Consulta dos próximos eventos
 12.Acompanhamento do progresso dos objetivos
