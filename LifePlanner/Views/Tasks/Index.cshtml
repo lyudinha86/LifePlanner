@@ -33,6 +33,7 @@
                 <tr>
                     <th>Tarefa</th>
                     <th>Objetivo</th>
+                    <th>Tags</th>
                     <th>Data limite</th>
                     <th>Prioridade</th>
                     <th>Estado</th>
@@ -46,6 +47,7 @@
                 {
                     <tr>
 
+                        <!-- TAREFA -->
                         <td>
                             <strong>@item.Title</strong>
 
@@ -57,6 +59,7 @@
                             }
                         </td>
 
+                        <!-- OBJETIVO -->
                         <td>
                             @if (item.Goal != null)
                             {
@@ -72,6 +75,26 @@
                             }
                         </td>
 
+                        <!-- TAGS -->
+                        <td>
+                            @if (item.TaskTags != null && item.TaskTags.Any())
+                            {
+                                @foreach (var taskTag in item.TaskTags)
+                                {
+                                    <span class="badge bg-secondary me-1 mb-1">
+                                        @taskTag.Tag.Name
+                                    </span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="text-muted">
+                                    Sem tags
+                                </span>
+                            }
+                        </td>
+
+                        <!-- DATA LIMITE -->
                         <td>
                             @if (item.DueDate.HasValue)
                             {
@@ -85,14 +108,17 @@
                             }
                         </td>
 
+                        <!-- PRIORIDADE -->
                         <td>
                             @item.Priority
                         </td>
 
+                        <!-- ESTADO -->
                         <td>
                             @item.Status
                         </td>
 
+                        <!-- AÇÕES -->
                         <td class="text-end">
 
                             <a asp-action="Edit"
@@ -119,6 +145,7 @@
                 }
 
             </tbody>
+
         </table>
     }
 

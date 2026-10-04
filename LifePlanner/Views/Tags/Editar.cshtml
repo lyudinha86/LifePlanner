@@ -1,0 +1,59 @@
+﻿@model LifePlanner.Data.Entities.Tag
+
+@{
+    ViewData["Title"] = "Editar Tag";
+}
+
+<div class="container mt-4">
+
+    <h2>Editar Tag</h2>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <form asp-action="Edit" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger"></div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+
+                    <label asp-for="Name"
+                           class="form-label">
+                        Nome
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control" />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger"></span>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar alterações
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Voltar
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

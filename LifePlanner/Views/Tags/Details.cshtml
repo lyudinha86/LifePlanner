@@ -1,0 +1,86 @@
+﻿@model LifePlanner.Data.Entities.Tag
+
+@{
+    ViewData["Title"] = "Detalhes da Tag";
+}
+
+<div class="container mt-4">
+
+    <h2>Detalhes da Tag</h2>
+
+    <div class="card mt-4">
+        <div class="card-body">
+
+            <h4>@Model.Name</h4>
+
+            <hr />
+
+            <h5>Tarefas associadas</h5>
+
+            @if (Model.TaskTags.Any())
+            {
+                <table class="table mt-3">
+
+                    <thead>
+                        <tr>
+                            <th>Tarefa</th>
+                            <th>Prioridade</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.TaskTags)
+                        {
+                            <tr>
+
+                                <td>
+                                    @item.TaskItem.Title
+                                </td>
+
+                                <td>
+                                    @item.TaskItem.Priority
+                                </td>
+
+                                <td>
+                                    @item.TaskItem.Status
+                                </td>
+
+                                <td>
+                                    <a asp-controller="Tasks"
+                                       asp-action="Details"
+                                       asp-route-id="@item.TaskItemId">
+                                        Ver tarefa
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">
+                    Esta tag ainda não está associada a nenhuma tarefa.
+                </p>
+            }
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Editar
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Voltar
+            </a>
+
+        </div>
+    </div>
+
+</div>

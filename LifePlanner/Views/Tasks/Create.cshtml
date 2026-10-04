@@ -1,4 +1,4 @@
-﻿@model LifePlanner.Data.Entities.TaskItem
+﻿@model LifePlanner.Models.ViewModels.TaskFormViewModel
 
 @{
     ViewData["Title"] = "Nova Tarefa";
@@ -14,7 +14,7 @@
     <hr />
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
 
             <form asp-action="Create" method="post">
 
@@ -26,8 +26,7 @@
                         Título
                     </label>
 
-                    <input asp-for="Title"
-                           class="form-control" />
+                    <input asp-for="Title" class="form-control" />
 
                     <span asp-validation-for="Title"
                           class="text-danger"></span>
@@ -52,11 +51,8 @@
                     </label>
 
                     <input asp-for="DueDate"
-                           type="date"
+                           type="datetime-local"
                            class="form-control" />
-
-                    <span asp-validation-for="DueDate"
-                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
@@ -65,15 +61,12 @@
                     </label>
 
                     <select asp-for="GoalId"
-                            asp-items="ViewBag.Goals"
+                            asp-items="Model.Goals"
                             class="form-select">
 
                         <option value="">Sem objetivo</option>
 
                     </select>
-
-                    <span asp-validation-for="GoalId"
-                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
@@ -81,14 +74,11 @@
                         Prioridade
                     </label>
 
-                    <select asp-for="Priority"
-                            class="form-select">
-
+                    <select asp-for="Priority" class="form-select">
                         <option value="">Selecione...</option>
                         <option value="Baixa">Baixa</option>
                         <option value="Média">Média</option>
                         <option value="Alta">Alta</option>
-
                     </select>
 
                     <span asp-validation-for="Priority"
@@ -100,19 +90,55 @@
                         Estado
                     </label>
 
-                    <select asp-for="Status"
-                            class="form-select">
-
+                    <select asp-for="Status" class="form-select">
                         <option value="">Selecione...</option>
                         <option value="Pendente">Pendente</option>
                         <option value="Em progresso">Em progresso</option>
                         <option value="Concluída">Concluída</option>
-                        <option value="Cancelada">Cancelada</option>
-
                     </select>
 
                     <span asp-validation-for="Status"
                           class="text-danger"></span>
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Tags
+                    </label>
+
+                    @if (Model.Tags.Any())
+                    {
+                        <div class="border rounded p-3">
+
+                            @foreach (var tag in Model.Tags)
+                            {
+                                <div class="form-check">
+
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           name="SelectedTagIds"
+                                           value="@tag.Id"
+                                           id="tag_@tag.Id" />
+
+                                    <label class="form-check-label"
+                                           for="tag_@tag.Id">
+                                        @tag.Name
+                                    </label>
+
+                                </div>
+                            }
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            Ainda não existem tags.
+                            Crie primeiro uma tag na área Tags.
+                        </div>
+                    }
+
                 </div>
 
                 <button type="submit"

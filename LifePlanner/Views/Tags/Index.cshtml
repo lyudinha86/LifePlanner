@@ -1,0 +1,73 @@
+﻿@model IEnumerable<LifePlanner.Data.Entities.Tag>
+
+@{
+    ViewData["Title"] = "Tags";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Tags</h2>
+            <p class="text-muted">
+                Organize as tarefas através de etiquetas.
+            </p>
+        </div>
+
+        <a asp-action="Create" class="btn btn-primary">
+            Nova Tag
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Ainda não existem tags.
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong>@item.Name</strong>
+                        </td>
+
+                        <td class="text-end">
+
+                            <a asp-action="Edit"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-primary">
+                                Editar
+                            </a>
+
+                            <a asp-action="Details"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-secondary">
+                                Detalhes
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@item.Id"
+                               class="btn btn-sm btn-outline-danger">
+                                Eliminar
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+</div>

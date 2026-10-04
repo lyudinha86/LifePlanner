@@ -1,0 +1,53 @@
+﻿@model LifePlanner.Data.Entities.Tag
+
+@{
+    ViewData["Title"] = "Eliminar Tag";
+}
+
+<div class="container mt-4">
+
+    <h2>Eliminar Tag</h2>
+
+    <div class="alert alert-warning mt-4">
+        Tem a certeza de que pretende eliminar esta tag?
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <h4>@Model.Name</h4>
+
+            @if (Model.TaskTags.Any())
+            {
+                <p class="mt-3">
+                    Esta tag está associada a
+                    <strong>@Model.TaskTags.Count</strong>
+                    tarefa(s).
+                </p>
+
+                <p class="text-muted">
+                    Ao eliminar a tag, as associações com essas tarefas
+                    também serão eliminadas.
+                </p>
+            }
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Eliminar
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

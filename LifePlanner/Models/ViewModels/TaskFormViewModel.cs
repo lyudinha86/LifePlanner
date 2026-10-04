@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using LifePlanner.Data.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace LifePlanner.Data.Entities
+namespace LifePlanner.Models.ViewModels
 {
-    public class TaskItem
+    public class TaskFormViewModel
     {
         public int Id { get; set; }
 
@@ -13,8 +15,6 @@ namespace LifePlanner.Data.Entities
         [MaxLength(500)]
         public string? Description { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-
         public DateTime? DueDate { get; set; }
 
         [Required]
@@ -23,15 +23,15 @@ namespace LifePlanner.Data.Entities
         [Required]
         public string Status { get; set; } = string.Empty;
 
-
-        // Relação com Goal - 1:N
         public int? GoalId { get; set; }
 
-        public Goal? Goal { get; set; }
+        public IEnumerable<SelectListItem> Goals { get; set; }
+            = new List<SelectListItem>();
 
+        public List<int> SelectedTagIds { get; set; }
+            = new List<int>();
 
-        // Relação com Tag - N:N
-        public ICollection<TaskTag> TaskTags { get; set; }
-            = new List<TaskTag>();
+        public IEnumerable<Tag> Tags { get; set; }
+            = new List<Tag>();
     }
 }

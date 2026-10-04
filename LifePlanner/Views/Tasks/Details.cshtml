@@ -6,16 +6,13 @@
 
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>Detalhes da Tarefa</h2>
-            <p class="text-muted">
-                Informação detalhada da tarefa.
-            </p>
-        </div>
-    </div>
+    <h2>Detalhes da Tarefa</h2>
 
-    <div class="card">
+    <p class="text-muted">
+        Consulte toda a informação da tarefa.
+    </p>
+
+    <div class="card mt-4">
         <div class="card-body">
 
             <h4 class="card-title mb-4">
@@ -41,6 +38,7 @@
                     }
                 </dd>
 
+
                 <dt class="col-sm-3">
                     Data de criação
                 </dt>
@@ -49,6 +47,7 @@
                     @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")
                 </dd>
 
+
                 <dt class="col-sm-3">
                     Data limite
                 </dt>
@@ -56,7 +55,7 @@
                 <dd class="col-sm-9">
                     @if (Model.DueDate.HasValue)
                     {
-                        @Model.DueDate.Value.ToString("dd/MM/yyyy")
+                        @Model.DueDate.Value.ToString("dd/MM/yyyy HH:mm")
                     }
                     else
                     {
@@ -66,6 +65,7 @@
                     }
                 </dd>
 
+
                 <dt class="col-sm-3">
                     Objetivo
                 </dt>
@@ -73,7 +73,11 @@
                 <dd class="col-sm-9">
                     @if (Model.Goal != null)
                     {
-                        @Model.Goal.Title
+                        <a asp-controller="Goals"
+                           asp-action="Details"
+                           asp-route-id="@Model.Goal.Id">
+                            @Model.Goal.Title
+                        </a>
                     }
                     else
                     {
@@ -83,6 +87,34 @@
                     }
                 </dd>
 
+
+                <dt class="col-sm-3">
+                    Tags
+                </dt>
+
+                <dd class="col-sm-9">
+
+                    @if (Model.TaskTags != null &&
+                         Model.TaskTags.Any())
+                    {
+                        @foreach (var taskTag in Model.TaskTags
+                            .OrderBy(tt => tt.Tag.Name))
+                        {
+                            <span class="badge bg-secondary me-1">
+                                @taskTag.Tag.Name
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem tags
+                        </span>
+                    }
+
+                </dd>
+
+
                 <dt class="col-sm-3">
                     Prioridade
                 </dt>
@@ -90,6 +122,7 @@
                 <dd class="col-sm-9">
                     @Model.Priority
                 </dd>
+
 
                 <dt class="col-sm-3">
                     Estado
