@@ -1,0 +1,109 @@
+﻿@model LifePlanner.Data.Entities.PlannerEvent
+
+@{
+    ViewData["Title"] = "Editar Evento";
+}
+
+<div class="container mt-4">
+
+    <h2>Editar Evento</h2>
+    <p class="text-muted">
+        Altere os dados do evento.
+    </p>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <form asp-action="Edit" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger"></div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">
+                        Título
+                    </label>
+
+                    <input asp-for="Title"
+                           class="form-control" />
+
+                    <span asp-validation-for="Title"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">
+                        Descrição
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="3"></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="StartDate" class="form-label">
+                        Data de início
+                    </label>
+
+                    <input asp-for="StartDate"
+                           type="datetime-local"
+                           class="form-control" />
+
+                    <span asp-validation-for="StartDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EndDate" class="form-label">
+                        Data de fim
+                    </label>
+
+                    <input asp-for="EndDate"
+                           type="datetime-local"
+                           class="form-control" />
+
+                    <span asp-validation-for="EndDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Location" class="form-label">
+                        Local
+                    </label>
+
+                    <input asp-for="Location"
+                           class="form-control" />
+
+                    <span asp-validation-for="Location"
+                          class="text-danger"></span>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Guardar alterações
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Voltar
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

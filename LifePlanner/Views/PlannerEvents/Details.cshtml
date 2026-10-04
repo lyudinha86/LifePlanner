@@ -1,0 +1,99 @@
+﻿@model LifePlanner.Data.Entities.PlannerEvent
+
+@{
+    ViewData["Title"] = "Detalhes do Evento";
+}
+
+<div class="container mt-4">
+
+    <h2>Detalhes do Evento</h2>
+    <p class="text-muted">
+        Informação detalhada do evento.
+    </p>
+
+    <div class="card mt-4">
+        <div class="card-body">
+
+            <h4 class="card-title mb-4">
+                @Model.Title
+            </h4>
+
+            <dl class="row">
+
+                <dt class="col-sm-3">
+                    Descrição
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        @Model.Description
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem descrição
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data de início
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.StartDate.ToString("dd/MM/yyyy HH:mm")
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data de fim
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (Model.EndDate.HasValue)
+                    {
+                        @Model.EndDate.Value.ToString("dd/MM/yyyy HH:mm")
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem data de fim
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">
+                    Local
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Location))
+                    {
+                        @Model.Location
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem local
+                        </span>
+                    }
+                </dd>
+
+            </dl>
+
+            <hr />
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Editar
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Voltar
+            </a>
+
+        </div>
+    </div>
+</div>
