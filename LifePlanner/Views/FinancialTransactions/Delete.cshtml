@@ -1,0 +1,86 @@
+﻿@model LifePlanner.Data.Entities.FinancialTransaction
+
+@{
+    ViewData["Title"] = "Eliminar Movimento";
+}
+
+<div class="container mt-4">
+
+    <h2>Eliminar Movimento</h2>
+
+    <div class="alert alert-warning mt-4">
+        Tem a certeza de que pretende eliminar este movimento?
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <h4 class="card-title">
+                @Model.Description
+            </h4>
+
+            <dl class="row mt-4">
+
+                <dt class="col-sm-3">
+                    Tipo
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Type
+                </dd>
+
+                <dt class="col-sm-3">
+                    Valor
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Amount.ToString("N2") €
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.TransactionDate.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-3">
+                    Categoria
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Category))
+                    {
+                        @Model.Category
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem categoria
+                        </span>
+                    }
+                </dd>
+
+            </dl>
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Eliminar
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,82 @@
+﻿@model LifePlanner.Data.Entities.FinancialTransaction
+
+@{
+    ViewData["Title"] = "Detalhes do Movimento";
+}
+
+<div class="container mt-4">
+
+    <h2>Detalhes do Movimento</h2>
+    <p class="text-muted">
+        Informação detalhada do movimento financeiro.
+    </p>
+
+    <div class="card mt-4">
+        <div class="card-body">
+
+            <h4 class="card-title mb-4">
+                @Model.Description
+            </h4>
+
+            <dl class="row">
+
+                <dt class="col-sm-3">
+                    Tipo
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Type
+                </dd>
+
+                <dt class="col-sm-3">
+                    Valor
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Amount.ToString("N2") €
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.TransactionDate.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-3">
+                    Categoria
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Category))
+                    {
+                        @Model.Category
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem categoria
+                        </span>
+                    }
+                </dd>
+
+            </dl>
+
+            <hr />
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Editar
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Voltar
+            </a>
+
+        </div>
+    </div>
+
+</div>

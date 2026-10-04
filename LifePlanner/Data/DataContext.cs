@@ -13,5 +13,6 @@ namespace LifePlanner.Data
         public DbSet<TaskItem> TaskItems { get; set; }
         public DbSet<Goal> Goals { get; set; }
         public DbSet<PlannerEvent> PlannerEvents { get; set; }
+        public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
     }
 }
