@@ -10,7 +10,15 @@ namespace LifePlanner.Data.Entities
         [MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
-        // Relação N:N com TaskItem
+
+        // UTILIZADOR
+        [Required]
+        public string UserId { get; set; } = string.Empty;
+
+        public User? User { get; set; }
+
+
+        // RELAÇÃO N:N COM TAREFAS
         public ICollection<TaskTag> TaskTags { get; set; }
             = new List<TaskTag>();
     }

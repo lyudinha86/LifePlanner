@@ -1,28 +1,66 @@
 ﻿using LifePlanner.Data;
 using LifePlanner.Data.Entities;
+using LifePlanner.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LifePlanner.Controllers
 {
+    [Authorize]
     public class FinancialTransactionsController : Controller
     {
         private readonly IGenericRepository<FinancialTransaction> _repository;
+        private readonly IUserHelper _userHelper;
 
         public FinancialTransactionsController(
-            IGenericRepository<FinancialTransaction> repository)
+            IGenericRepository<FinancialTransaction> repository,
+            IUserHelper userHelper)
         {
             _repository = repository;
+            _userHelper = userHelper;
         }
 
+
+        // =========================================================
+        // OBTER UTILIZADOR ATUAL
+        // =========================================================
+
+        private async Task<User?> GetCurrentUserAsync()
+        {
+            if (string.IsNullOrEmpty(User.Identity?.Name))
+            {
+                return null;
+            }
+
+            return await _userHelper
+                .GetUserByEmailAsync(User.Identity.Name);
+        }
+
+
+        // =========================================================
         // LISTA DE MOVIMENTOS
+        // =========================================================
+
         public async Task<IActionResult> Index()
         {
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            // Mostrar apenas movimentos do utilizador atual
             var transactions = await _repository
                 .GetAll()
+                .Where(t => t.UserId == user.Id)
                 .OrderByDescending(t => t.TransactionDate)
                 .ToListAsync();
 
+
+            // Calcular totais apenas do utilizador atual
             ViewBag.TotalReceitas = transactions
                 .Where(t => t.Type == "Receita")
                 .Sum(t => t.Amount);
@@ -31,94 +69,190 @@ namespace LifePlanner.Controllers
                 .Where(t => t.Type == "Despesa")
                 .Sum(t => t.Amount);
 
-            ViewBag.Saldo = ViewBag.TotalReceitas - ViewBag.TotalDespesas;
+            ViewBag.Saldo =
+                ViewBag.TotalReceitas -
+                ViewBag.TotalDespesas;
+
 
             return View(transactions);
         }
 
-        // CRIAR - GET
+
+        // =========================================================
+        // CRIAR MOVIMENTO - GET
+        // =========================================================
+
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // CRIAR - POST
+
+        // =========================================================
+        // CRIAR MOVIMENTO - POST
+        // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
             FinancialTransaction transaction)
         {
+            // UserId é definido pelo sistema
+            ModelState.Remove(nameof(FinancialTransaction.UserId));
+
+
+            // Validar valor
             if (transaction.Amount <= 0)
             {
                 ModelState.AddModelError(
-                    "Amount",
+                    nameof(FinancialTransaction.Amount),
                     "O valor deve ser superior a zero.");
             }
 
+
+            // Validar tipo
             if (transaction.Type != "Receita" &&
                 transaction.Type != "Despesa")
             {
                 ModelState.AddModelError(
-                    "Type",
+                    nameof(FinancialTransaction.Type),
                     "Selecione um tipo válido.");
             }
+
 
             if (!ModelState.IsValid)
             {
                 return View(transaction);
             }
+
+
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            // Associar movimento ao utilizador autenticado
+            transaction.UserId = user.Id;
 
             await _repository.CreateAsync(transaction);
 
             return RedirectToAction(nameof(Index));
         }
 
-        // EDITAR - GET
+
+        // =========================================================
+        // EDITAR MOVIMENTO - GET
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var transaction = await _repository.GetByIdAsync(id);
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var transaction = await _repository
+                .GetAll()
+                .FirstOrDefaultAsync(t =>
+                    t.Id == id &&
+                    t.UserId == user.Id);
+
 
             if (transaction == null)
             {
                 return NotFound();
             }
 
+
             return View(transaction);
         }
 
-        // EDITAR - POST
+
+        // =========================================================
+        // EDITAR MOVIMENTO - POST
+        // =========================================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
-            FinancialTransaction transaction)
+            FinancialTransaction model)
         {
-            if (id != transaction.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
 
-            if (transaction.Amount <= 0)
+
+            // UserId não vem do formulário
+            ModelState.Remove(nameof(FinancialTransaction.UserId));
+
+
+            // Validar valor
+            if (model.Amount <= 0)
             {
                 ModelState.AddModelError(
-                    "Amount",
+                    nameof(FinancialTransaction.Amount),
                     "O valor deve ser superior a zero.");
             }
 
-            if (transaction.Type != "Receita" &&
-                transaction.Type != "Despesa")
+
+            // Validar tipo
+            if (model.Type != "Receita" &&
+                model.Type != "Despesa")
             {
                 ModelState.AddModelError(
-                    "Type",
+                    nameof(FinancialTransaction.Type),
                     "Selecione um tipo válido.");
             }
 
+
             if (!ModelState.IsValid)
             {
-                return View(transaction);
+                return View(model);
             }
+
+
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            // Procurar apenas um movimento
+            // pertencente ao utilizador atual
+            var transaction = await _repository
+                .GetAll()
+                .FirstOrDefaultAsync(t =>
+                    t.Id == id &&
+                    t.UserId == user.Id);
+
+
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+
+            // Atualizar apenas os campos permitidos
+            transaction.Description = model.Description;
+            transaction.Type = model.Type;
+            transaction.Amount = model.Amount;
+            transaction.TransactionDate = model.TransactionDate;
+            transaction.Category = model.Category;
+
+            // UserId não é alterado
+
 
             try
             {
@@ -126,7 +260,13 @@ namespace LifePlanner.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await _repository.ExistsAsync(transaction.Id))
+                var exists = await _repository
+                    .GetAll()
+                    .AnyAsync(t =>
+                        t.Id == id &&
+                        t.UserId == user.Id);
+
+                if (!exists)
                 {
                     return NotFound();
                 }
@@ -134,48 +274,103 @@ namespace LifePlanner.Controllers
                 throw;
             }
 
+
             return RedirectToAction(nameof(Index));
         }
 
-        // DETALHES
+
+        // =========================================================
+        // DETALHES DO MOVIMENTO
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var transaction = await _repository.GetByIdAsync(id);
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var transaction = await _repository
+                .GetAll()
+                .FirstOrDefaultAsync(t =>
+                    t.Id == id &&
+                    t.UserId == user.Id);
+
 
             if (transaction == null)
             {
                 return NotFound();
             }
 
+
             return View(transaction);
         }
 
-        // ELIMINAR - GET
+
+        // =========================================================
+        // ELIMINAR MOVIMENTO - GET
+        // =========================================================
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var transaction = await _repository.GetByIdAsync(id);
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var transaction = await _repository
+                .GetAll()
+                .FirstOrDefaultAsync(t =>
+                    t.Id == id &&
+                    t.UserId == user.Id);
+
 
             if (transaction == null)
             {
                 return NotFound();
             }
 
+
             return View(transaction);
         }
 
-        // ELIMINAR - POST
+
+        // =========================================================
+        // ELIMINAR MOVIMENTO - POST
+        // =========================================================
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var transaction = await _repository.GetByIdAsync(id);
+            var user = await GetCurrentUserAsync();
+
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var transaction = await _repository
+                .GetAll()
+                .FirstOrDefaultAsync(t =>
+                    t.Id == id &&
+                    t.UserId == user.Id);
+
 
             if (transaction == null)
             {
                 return NotFound();
             }
+
 
             await _repository.DeleteAsync(transaction);
 

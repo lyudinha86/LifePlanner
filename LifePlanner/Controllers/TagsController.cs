@@ -2,9 +2,11 @@
 using LifePlanner.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LifePlanner.Controllers
 {
+    [Authorize]
     public class TagsController : Controller
     {
         private readonly IGenericRepository<Tag> _repository;

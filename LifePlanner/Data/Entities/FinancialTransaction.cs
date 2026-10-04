@@ -22,5 +22,12 @@ namespace LifePlanner.Data.Entities
 
         [MaxLength(100)]
         public string? Category { get; set; }
+
+
+        // UTILIZADOR
+        [Required]
+        public string UserId { get; set; } = string.Empty;
+
+        public User? User { get; set; }
     }
 }

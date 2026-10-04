@@ -24,13 +24,20 @@ namespace LifePlanner.Data.Entities
         public string Status { get; set; } = string.Empty;
 
 
-        // Relação com Goal - 1:N
+        // OBJETIVO
         public int? GoalId { get; set; }
 
         public Goal? Goal { get; set; }
 
 
-        // Relação com Tag - N:N
+        // UTILIZADOR
+        [Required]
+        public string UserId { get; set; } = string.Empty;
+
+        public User? User { get; set; }
+
+
+        // TAGS
         public ICollection<TaskTag> TaskTags { get; set; }
             = new List<TaskTag>();
     }

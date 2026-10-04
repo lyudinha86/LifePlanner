@@ -20,7 +20,15 @@ namespace LifePlanner.Data.Entities
         [Required]
         public string Status { get; set; } = "Em progresso";
 
-        // Relação 1:N
+
+        // UTILIZADOR
+        [Required]
+        public string UserId { get; set; } = string.Empty;
+
+        public User? User { get; set; }
+
+
+        // TAREFAS ASSOCIADAS
         public ICollection<TaskItem> TaskItems { get; set; }
             = new List<TaskItem>();
     }
