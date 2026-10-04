@@ -1,8 +1,383 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model LifePlanner.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Início";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User.Identity?.IsAuthenticated == true && Model != null)
+{
+    <div class="container py-4">
+
+        <div class="mb-4">
+            <h2 class="fw-bold">O meu LifePlanner</h2>
+            <p class="text-muted">
+                Organize o seu dia e acompanhe o que é mais importante.
+            </p>
+        </div>
+
+        <!-- CARDS -->
+        <div class="row g-3 mb-4">
+
+            <div class="col-md-6 col-xl-3">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h6 class="text-muted">Tarefas pendentes</h6>
+
+                        <h2 class="fw-bold">
+                            @Model.TarefasPendentes
+                        </h2>
+
+                        <a asp-controller="Tasks"
+                           asp-action="Index"
+                           class="text-decoration-none">
+                            Ver tarefas →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h6 class="text-muted">Próximos eventos</h6>
+
+                        <h2 class="fw-bold">
+                            @Model.ProximosEventos
+                        </h2>
+
+                        <a asp-controller="PlannerEvents"
+                           asp-action="Index"
+                           class="text-decoration-none">
+                            Ver eventos →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h6 class="text-muted">Objetivos em progresso</h6>
+
+                        <h2 class="fw-bold">
+                            @Model.ObjetivosEmProgresso
+                        </h2>
+
+                        <a asp-controller="Goals"
+                           asp-action="Index"
+                           class="text-decoration-none">
+                            Ver objetivos →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <h6 class="text-muted">Saldo atual</h6>
+
+                        <h2 class="fw-bold">
+                            @Model.Saldo.ToString("N2") €
+                        </h2>
+
+                        <a asp-controller="FinancialTransactions"
+                           asp-action="Index"
+                           class="text-decoration-none">
+                            Ver finanças →
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- RESUMO FINANCEIRO -->
+        <div class="card shadow-sm border-0 mb-4">
+
+            <div class="card-body">
+
+                <h5 class="fw-bold mb-3">
+                    Resumo financeiro
+                </h5>
+
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <small class="text-muted">Receitas</small>
+
+                        <div class="fs-4 fw-semibold text-success">
+                            @Model.TotalReceitas.ToString("N2") €
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">Despesas</small>
+
+                        <div class="fs-4 fw-semibold text-danger">
+                            @Model.TotalDespesas.ToString("N2") €
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">Saldo</small>
+
+                        <div class="fs-4 fw-semibold">
+                            @Model.Saldo.ToString("N2") €
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <!-- TAREFAS -->
+            <div class="col-lg-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <h5 class="fw-bold mb-0">
+                                Próximas tarefas
+                            </h5>
+
+                            <a asp-controller="Tasks"
+                               asp-action="Create"
+                               class="btn btn-sm btn-outline-primary">
+                                + Nova
+                            </a>
+
+                        </div>
+
+                        @if (Model.TarefasRecentes.Any())
+                        {
+                            <div class="list-group list-group-flush">
+
+                                @foreach (var tarefa in Model.TarefasRecentes)
+                                {
+                                    <a asp-controller="Tasks"
+                                       asp-action="Details"
+                                       asp-route-id="@tarefa.Id"
+                                       class="list-group-item list-group-item-action px-0">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <strong>
+                                                @tarefa.Title
+                                            </strong>
+
+                                            @if (tarefa.DueDate.HasValue)
+                                            {
+                                                <small class="text-muted">
+                                                    @tarefa.DueDate.Value.ToString("dd/MM/yyyy")
+                                                </small>
+                                            }
+
+                                        </div>
+
+                                        <small class="text-muted">
+                                            @tarefa.Priority · @tarefa.Status
+                                        </small>
+
+                                    </a>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">
+                                Não existem tarefas pendentes.
+                            </p>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EVENTOS -->
+            <div class="col-lg-6">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <h5 class="fw-bold mb-0">
+                                Próximos eventos
+                            </h5>
+
+                            <a asp-controller="PlannerEvents"
+                               asp-action="Create"
+                               class="btn btn-sm btn-outline-primary">
+                                + Novo
+                            </a>
+
+                        </div>
+
+                        @if (Model.EventosProximos.Any())
+                        {
+                            <div class="list-group list-group-flush">
+
+                                @foreach (var evento in Model.EventosProximos)
+                                {
+                                    <a asp-controller="PlannerEvents"
+                                       asp-action="Details"
+                                       asp-route-id="@evento.Id"
+                                       class="list-group-item list-group-item-action px-0">
+
+                                        <div class="d-flex justify-content-between">
+
+                                            <strong>
+                                                @evento.Title
+                                            </strong>
+
+                                            <small class="text-muted">
+                                                @evento.StartDate.ToString("dd/MM/yyyy HH:mm")
+                                            </small>
+
+                                        </div>
+
+                                        @if (!string.IsNullOrWhiteSpace(evento.Location))
+                                        {
+                                            <small class="text-muted">
+                                                @evento.Location
+                                            </small>
+                                        }
+
+                                    </a>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">
+                                Não existem próximos eventos.
+                            </p>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- OBJETIVOS -->
+        <div class="card shadow-sm border-0 mt-4">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+                    <h5 class="fw-bold mb-0">
+                        Objetivos em progresso
+                    </h5>
+
+                    <a asp-controller="Goals"
+                       asp-action="Create"
+                       class="btn btn-sm btn-outline-primary">
+                        + Novo objetivo
+                    </a>
+
+                </div>
+
+                @if (Model.ObjetivosRecentes.Any())
+                {
+                    <div class="row g-3">
+
+                        @foreach (var objetivo in Model.ObjetivosRecentes)
+                        {
+                            <div class="col-md-6 col-lg-4">
+
+                                <div class="border rounded p-3 h-100">
+
+                                    <h6 class="fw-bold">
+                                        @objetivo.Title
+                                    </h6>
+
+                                    <div class="text-muted small mb-2">
+                                        Estado: @objetivo.Status
+                                    </div>
+
+                                    @if (objetivo.DueDate.HasValue)
+                                    {
+                                        <div class="small mb-3">
+                                            Data limite:
+                                            @objetivo.DueDate.Value.ToString("dd/MM/yyyy")
+                                        </div>
+                                    }
+
+                                    <a asp-controller="Goals"
+                                       asp-action="Details"
+                                       asp-route-id="@objetivo.Id"
+                                       class="text-decoration-none">
+                                        Ver detalhes →
+                                    </a>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">
+                        Não existem objetivos em progresso.
+                    </p>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="text-center py-5">
+
+        <h1 class="display-4 fw-bold">
+            LifePlanner
+        </h1>
+
+        <p class="lead text-muted">
+            Organize as suas tarefas, eventos, objetivos e finanças num único lugar.
+        </p>
+
+        <div class="mt-4">
+
+            <a asp-controller="Account"
+               asp-action="Login"
+               class="btn btn-primary me-2">
+                Entrar
+            </a>
+
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="btn btn-outline-primary">
+                Criar conta
+            </a>
+
+        </div>
+
+    </div>
+}
