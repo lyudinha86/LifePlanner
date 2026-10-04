@@ -9,7 +9,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2>Detalhes da Tarefa</h2>
-            <p class="text-muted">Informação detalhada da tarefa.</p>
+            <p class="text-muted">
+                Informação detalhada da tarefa.
+            </p>
         </div>
     </div>
 
@@ -25,6 +27,7 @@
                 <dt class="col-sm-3">
                     Descrição
                 </dt>
+
                 <dd class="col-sm-9">
                     @if (!string.IsNullOrEmpty(Model.Description))
                     {
@@ -32,13 +35,16 @@
                     }
                     else
                     {
-                        <span class="text-muted">Sem descrição</span>
+                        <span class="text-muted">
+                            Sem descrição
+                        </span>
                     }
                 </dd>
 
                 <dt class="col-sm-3">
                     Data de criação
                 </dt>
+
                 <dd class="col-sm-9">
                     @Model.CreatedDate.ToString("dd/MM/yyyy HH:mm")
                 </dd>
@@ -46,6 +52,7 @@
                 <dt class="col-sm-3">
                     Data limite
                 </dt>
+
                 <dd class="col-sm-9">
                     @if (Model.DueDate.HasValue)
                     {
@@ -53,13 +60,33 @@
                     }
                     else
                     {
-                        <span class="text-muted">Sem data limite</span>
+                        <span class="text-muted">
+                            Sem data limite
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">
+                    Objetivo
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (Model.Goal != null)
+                    {
+                        @Model.Goal.Title
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem objetivo
+                        </span>
                     }
                 </dd>
 
                 <dt class="col-sm-3">
                     Prioridade
                 </dt>
+
                 <dd class="col-sm-9">
                     @Model.Priority
                 </dd>
@@ -67,6 +94,7 @@
                 <dt class="col-sm-3">
                     Estado
                 </dt>
+
                 <dd class="col-sm-9">
                     @Model.Status
                 </dd>

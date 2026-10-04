@@ -1,51 +1,47 @@
-﻿@model IEnumerable<LifePlanner.Data.Entities.TaskItem>
+﻿@model IEnumerable<LifePlanner.Data.Entities.Goal>
 
 @{
-    ViewData["Title"] = "Tarefas";
+    ViewData["Title"] = "Objetivos";
 }
 
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2>Tarefas</h2>
+            <h2>Objetivos</h2>
             <p class="text-muted">
-                Organize e acompanhe as suas tarefas.
+                Defina e acompanhe os seus objetivos pessoais.
             </p>
         </div>
 
         <a asp-action="Create" class="btn btn-primary">
-            Nova Tarefa
+            Novo Objetivo
         </a>
     </div>
 
     @if (!Model.Any())
     {
         <div class="alert alert-info">
-            Ainda não existem tarefas registadas.
+            Ainda não existem objetivos registados.
         </div>
     }
     else
     {
         <table class="table table-hover align-middle">
-
             <thead>
                 <tr>
-                    <th>Tarefa</th>
                     <th>Objetivo</th>
+                    <th>Data início</th>
                     <th>Data limite</th>
-                    <th>Prioridade</th>
                     <th>Estado</th>
                     <th></th>
                 </tr>
             </thead>
 
             <tbody>
-
                 @foreach (var item in Model)
                 {
                     <tr>
-
                         <td>
                             <strong>@item.Title</strong>
 
@@ -58,18 +54,7 @@
                         </td>
 
                         <td>
-                            @if (item.Goal != null)
-                            {
-                                <span>
-                                    @item.Goal.Title
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">
-                                    Sem objetivo
-                                </span>
-                            }
+                            @item.StartDate.ToString("dd/MM/yyyy")
                         </td>
 
                         <td>
@@ -86,15 +71,10 @@
                         </td>
 
                         <td>
-                            @item.Priority
-                        </td>
-
-                        <td>
                             @item.Status
                         </td>
 
                         <td class="text-end">
-
                             <a asp-action="Edit"
                                asp-route-id="@item.Id"
                                class="btn btn-sm btn-outline-primary">
@@ -112,12 +92,9 @@
                                class="btn btn-sm btn-outline-danger">
                                 Eliminar
                             </a>
-
                         </td>
-
                     </tr>
                 }
-
             </tbody>
         </table>
     }

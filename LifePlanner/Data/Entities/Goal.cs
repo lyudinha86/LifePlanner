@@ -2,7 +2,7 @@
 
 namespace LifePlanner.Data.Entities
 {
-    public class TaskItem
+    public class Goal
     {
         public int Id { get; set; }
 
@@ -13,17 +13,15 @@ namespace LifePlanner.Data.Entities
         [MaxLength(500)]
         public string? Description { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime StartDate { get; set; } = DateTime.Now;
 
         public DateTime? DueDate { get; set; }
 
         [Required]
-        public string Priority { get; set; } = string.Empty;
+        public string Status { get; set; } = "Em progresso";
 
-        [Required]
-        public string Status { get; set; } = string.Empty;
-        public int? GoalId { get; set; }
-
-        public Goal? Goal { get; set; }
+        // Relação 1:N
+        public ICollection<TaskItem> TaskItems { get; set; }
+            = new List<TaskItem>();
     }
 }

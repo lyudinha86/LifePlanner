@@ -11,5 +11,6 @@ namespace LifePlanner.Data
         }
 
         public DbSet<TaskItem> TaskItems { get; set; }
+        public DbSet<Goal> Goals { get; set; }
     }
 }

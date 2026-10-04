@@ -1,0 +1,168 @@
+﻿@model LifePlanner.Data.Entities.Goal
+
+@{
+    ViewData["Title"] = "Detalhes do Objetivo";
+}
+
+<div class="container mt-4">
+
+    <h2>Detalhes do Objetivo</h2>
+    <p class="text-muted">
+        Informação detalhada do objetivo e respetivas tarefas.
+    </p>
+
+    <div class="card mt-4">
+        <div class="card-body">
+
+            <h4 class="card-title mb-4">
+                @Model.Title
+            </h4>
+
+            <dl class="row">
+
+                <dt class="col-sm-3">
+                    Descrição
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        @Model.Description
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem descrição
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data de início
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.StartDate.ToString("dd/MM/yyyy")
+                </dd>
+
+                <dt class="col-sm-3">
+                    Data limite
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (Model.DueDate.HasValue)
+                    {
+                        @Model.DueDate.Value.ToString("dd/MM/yyyy")
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem data limite
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">
+                    Estado
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Status
+                </dd>
+
+            </dl>
+
+            <hr />
+
+            <h5 class="mb-3">
+                Tarefas associadas
+            </h5>
+
+            @if (Model.TaskItems == null || !Model.TaskItems.Any())
+            {
+                <div class="alert alert-info">
+                    Este objetivo ainda não tem tarefas associadas.
+                </div>
+            }
+            else
+            {
+                <table class="table table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>Tarefa</th>
+                            <th>Data limite</th>
+                            <th>Prioridade</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var task in Model.TaskItems
+                            .OrderBy(t => t.DueDate))
+                        {
+                            <tr>
+
+                                <td>
+                                    @task.Title
+                                </td>
+
+                                <td>
+                                    @if (task.DueDate.HasValue)
+                                    {
+                                        @task.DueDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Sem data
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @task.Priority
+                                </td>
+
+                                <td>
+                                    @task.Status
+                                </td>
+
+                                <td class="text-end">
+
+                                    <a asp-controller="Tasks"
+                                       asp-action="Details"
+                                       asp-route-id="@task.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Detalhes
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            }
+
+            <hr />
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               class="btn btn-primary">
+                Editar
+            </a>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+                Voltar
+            </a>
+
+        </div>
+    </div>
+
+</div>

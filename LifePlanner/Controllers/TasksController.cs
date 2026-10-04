@@ -1,6 +1,7 @@
 ﻿using LifePlanner.Data;
 using LifePlanner.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace LifePlanner.Controllers
@@ -8,34 +9,63 @@ namespace LifePlanner.Controllers
     public class TasksController : Controller
     {
         private readonly IGenericRepository<TaskItem> _repository;
+        private readonly IGenericRepository<Goal> _goalRepository;
 
-        public TasksController(IGenericRepository<TaskItem> repository)
+        public TasksController(
+            IGenericRepository<TaskItem> repository,
+            IGenericRepository<Goal> goalRepository)
         {
             _repository = repository;
+            _goalRepository = goalRepository;
         }
 
+        // LISTA DE TAREFAS
         public async Task<IActionResult> Index()
         {
             var tasks = await _repository
                 .GetAll()
+                .Include(t => t.Goal)
                 .OrderBy(t => t.DueDate)
                 .ToListAsync();
 
             return View(tasks);
         }
 
+        // CRIAR TAREFA - GET
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var goals = await _goalRepository
+                .GetAll()
+                .OrderBy(g => g.Title)
+                .ToListAsync();
+
+            ViewBag.Goals = new SelectList(
+                goals,
+                "Id",
+                "Title");
+
             return View();
         }
 
+        // CRIAR TAREFA - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaskItem taskItem)
         {
             if (!ModelState.IsValid)
             {
+                var goals = await _goalRepository
+                    .GetAll()
+                    .OrderBy(g => g.Title)
+                    .ToListAsync();
+
+                ViewBag.Goals = new SelectList(
+                    goals,
+                    "Id",
+                    "Title",
+                    taskItem.GoalId);
+
                 return View(taskItem);
             }
 
@@ -46,6 +76,7 @@ namespace LifePlanner.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // EDITAR TAREFA - GET
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -56,9 +87,21 @@ namespace LifePlanner.Controllers
                 return NotFound();
             }
 
+            var goals = await _goalRepository
+                .GetAll()
+                .OrderBy(g => g.Title)
+                .ToListAsync();
+
+            ViewBag.Goals = new SelectList(
+                goals,
+                "Id",
+                "Title",
+                taskItem.GoalId);
+
             return View(taskItem);
         }
 
+        // EDITAR TAREFA - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, TaskItem taskItem)
@@ -70,6 +113,17 @@ namespace LifePlanner.Controllers
 
             if (!ModelState.IsValid)
             {
+                var goals = await _goalRepository
+                    .GetAll()
+                    .OrderBy(g => g.Title)
+                    .ToListAsync();
+
+                ViewBag.Goals = new SelectList(
+                    goals,
+                    "Id",
+                    "Title",
+                    taskItem.GoalId);
+
                 return View(taskItem);
             }
 
@@ -89,10 +143,15 @@ namespace LifePlanner.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        // DETALHES DA TAREFA
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var taskItem = await _repository.GetByIdAsync(id);
+            var taskItem = await _repository
+                .GetAll()
+                .Include(t => t.Goal)
+                .FirstOrDefaultAsync(t => t.Id == id);
 
             if (taskItem == null)
             {
@@ -102,6 +161,7 @@ namespace LifePlanner.Controllers
             return View(taskItem);
         }
 
+        // ELIMINAR TAREFA - GET
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -115,6 +175,7 @@ namespace LifePlanner.Controllers
             return View(taskItem);
         }
 
+        // ELIMINAR TAREFA - POST
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

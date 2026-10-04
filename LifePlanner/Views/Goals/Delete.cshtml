@@ -1,0 +1,79 @@
+﻿@model LifePlanner.Data.Entities.Goal
+
+@{
+    ViewData["Title"] = "Eliminar Objetivo";
+}
+
+<div class="container mt-4">
+
+    <h2>Eliminar Objetivo</h2>
+
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mt-3"></div>
+
+    <div class="alert alert-warning mt-4">
+        Tem a certeza de que pretende eliminar este objetivo?
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <h4 class="card-title">
+                @Model.Title
+            </h4>
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p class="text-muted">
+                    @Model.Description
+                </p>
+            }
+
+            <dl class="row mt-4">
+
+                <dt class="col-sm-3">
+                    Data limite
+                </dt>
+
+                <dd class="col-sm-9">
+                    @if (Model.DueDate.HasValue)
+                    {
+                        @Model.DueDate.Value.ToString("dd/MM/yyyy")
+                    }
+                    else
+                    {
+                        <span class="text-muted">
+                            Sem data limite
+                        </span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">
+                    Estado
+                </dt>
+
+                <dd class="col-sm-9">
+                    @Model.Status
+                </dd>
+
+            </dl>
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    Eliminar
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+</div>

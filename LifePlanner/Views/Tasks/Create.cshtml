@@ -7,7 +7,9 @@
 <div class="container mt-4">
 
     <h2>Nova Tarefa</h2>
-    <p class="text-muted">Adicione uma nova tarefa ao seu planeamento.</p>
+    <p class="text-muted">
+        Adicione uma nova tarefa ao seu planeamento.
+    </p>
 
     <hr />
 
@@ -52,6 +54,26 @@
                     <input asp-for="DueDate"
                            type="date"
                            class="form-control" />
+
+                    <span asp-validation-for="DueDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="GoalId" class="form-label">
+                        Objetivo
+                    </label>
+
+                    <select asp-for="GoalId"
+                            asp-items="ViewBag.Goals"
+                            class="form-select">
+
+                        <option value="">Sem objetivo</option>
+
+                    </select>
+
+                    <span asp-validation-for="GoalId"
+                          class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
@@ -59,11 +81,14 @@
                         Prioridade
                     </label>
 
-                    <select asp-for="Priority" class="form-select">
+                    <select asp-for="Priority"
+                            class="form-select">
+
                         <option value="">Selecione...</option>
                         <option value="Baixa">Baixa</option>
                         <option value="Média">Média</option>
                         <option value="Alta">Alta</option>
+
                     </select>
 
                     <span asp-validation-for="Priority"
@@ -75,19 +100,23 @@
                         Estado
                     </label>
 
-                    <select asp-for="Status" class="form-select">
+                    <select asp-for="Status"
+                            class="form-select">
+
                         <option value="">Selecione...</option>
                         <option value="Pendente">Pendente</option>
                         <option value="Em progresso">Em progresso</option>
                         <option value="Concluída">Concluída</option>
                         <option value="Cancelada">Cancelada</option>
+
                     </select>
 
                     <span asp-validation-for="Status"
                           class="text-danger"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
+                <button type="submit"
+                        class="btn btn-primary">
                     Guardar
                 </button>
 
