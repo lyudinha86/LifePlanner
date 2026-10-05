@@ -13,15 +13,18 @@ namespace LifePlanner.Controllers
         private readonly IGenericRepository<PlannerEvent> _eventRepository;
         private readonly IGenericRepository<TaskItem> _taskRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IGenericRepository<FinancialTransaction> _financialRepository;
 
         public CalendarController(
             IGenericRepository<PlannerEvent> eventRepository,
             IGenericRepository<TaskItem> taskRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IGenericRepository<FinancialTransaction> financialRepository)
         {
             _eventRepository = eventRepository;
             _taskRepository = taskRepository;
             _userHelper = userHelper;
+            _financialRepository = financialRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -67,8 +70,29 @@ namespace LifePlanner.Controllers
                 })
                 .ToListAsync();
 
+            var payments = await _financialRepository
+    .GetAll()
+    .Where(f =>
+        f.UserId == user.Id &&
+        f.Type == "Despesa" &&
+        !f.IsPaid &&
+        f.DueDate.HasValue)
+    .Select(f => new
+    {
+        id = f.Id,
+        title = f.Description + " - " + f.Amount.ToString("N2") + " €",
+        start = f.DueDate!.Value,
+        end = (DateTime?)null,
+        type = "payment"
+    })
+    .ToListAsync();
+
             ViewBag.Events = events;
             ViewBag.Tasks = tasks;
+            ViewBag.Payments = payments;
+
+            
+
 
             return View();
         }

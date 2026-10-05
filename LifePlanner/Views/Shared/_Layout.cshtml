@@ -22,176 +22,220 @@
 
 <body>
 
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <div class="lp-app">
+
+        <!-- =====================================================
+             SIDEBAR
+             ===================================================== -->
+        <aside class="lp-sidebar">
+
+            <a class="lp-logo"
+               asp-controller="Home"
+               asp-action="Index">
+
+                <span class="lp-logo-icon">◆</span>
+                <span>LifePlanner</span>
+
+            </a>
+
+            <nav class="lp-sidebar-nav">
+
+                <a class="lp-menu-link"
+                   asp-controller="Home"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">⌂</span>
+                    <span>Início</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="Tasks"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">✓</span>
+                    <span>Tarefas</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="Calendar"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">▣</span>
+                    <span>Calendário</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="Goals"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">◎</span>
+                    <span>Objetivos</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="PlannerEvents"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">◷</span>
+                    <span>Eventos</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="FinancialTransactions"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">€</span>
+                    <span>Finanças</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="Tags"
+                   asp-action="Index">
+                    <span class="lp-menu-icon">#</span>
+                    <span>Tags</span>
+                </a>
+
+            </nav>
+
+            <div class="lp-sidebar-bottom">
+
+                <a class="lp-menu-link"
+                   asp-controller="Account"
+                   asp-action="ChangeUser">
+                    <span class="lp-menu-icon">○</span>
+                    <span>Perfil</span>
+                </a>
+
+                <a class="lp-menu-link"
+                   asp-controller="Account"
+                   asp-action="ChangePassword">
+                    <span class="lp-menu-icon">⚙</span>
+                    <span>Alterar password</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================================
+             MAIN AREA
+             ===================================================== -->
+        <div class="lp-main">
+
+            <!-- TOPBAR -->
+            <header class="lp-topbar">
+
+                <div class="lp-topbar-title">
+                    LifePlanner
+                </div>
+
+                <div class="dropdown">
+
+                    <a class="lp-user dropdown-toggle"
+                       href="#"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+
+                        <span class="lp-avatar">
+                            @(User.Identity.Name?.Substring(0, 1).ToUpper())
+                        </span>
+
+                        <span class="lp-user-name">
+                            @User.Identity.Name
+                        </span>
+
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+                            <a class="dropdown-item"
+                               asp-controller="Account"
+                               asp-action="ChangeUser">
+                                Editar perfil
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item"
+                               asp-controller="Account"
+                               asp-action="ChangePassword">
+                                Alterar password
+                            </a>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider" />
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item"
+                               asp-controller="Account"
+                               asp-action="Logout">
+                                Terminar sessão
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+            <main class="lp-content">
+                @RenderBody()
+            </main>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <!-- =====================================================
+         NÃO AUTENTICADO
+         ===================================================== -->
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom">
 
-            <div class="container-fluid">
+            <div class="container">
 
-                <!-- LOGO / NOME -->
                 <a class="navbar-brand"
-                   asp-area=""
                    asp-controller="Home"
                    asp-action="Index">
                     LifePlanner
                 </a>
 
-                <!-- MENU MOBILE -->
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
+                        data-bs-target="#publicNavbar">
 
                     <span class="navbar-toggler-icon"></span>
 
                 </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div id="publicNavbar"
+                     class="collapse navbar-collapse">
 
-                    <!-- MENU PRINCIPAL -->
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav ms-auto">
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-area=""
-                               asp-controller="Home"
-                               asp-action="Index">
-                                Início
+                            <a class="nav-link"
+                               asp-controller="Account"
+                               asp-action="Login">
+                                Login
                             </a>
                         </li>
 
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="Tasks"
-                                   asp-action="Index">
-                                    Tarefas
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                            <a class="nav-link text-dark"
-                                 asp-controller="Calendar"
-                                 asp-action="Index">
-                                 Calendário
-                              </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="Goals"
-                                   asp-action="Index">
-                                    Objetivos
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="PlannerEvents"
-                                   asp-action="Index">
-                                    Eventos
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="FinancialTransactions"
-                                   asp-action="Index">
-                                    Finanças
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark"
-                                   asp-controller="Tags"
-                                   asp-action="Index">
-                                    Tags
-                                </a>
-                            </li>
-                        }
-
-                    </ul>
-
-
-                    <!-- LOGIN / UTILIZADOR -->
-                    <ul class="navbar-nav">
-
-                        @if (User.Identity != null && User.Identity.IsAuthenticated)
-                        {
-                            <!-- UTILIZADOR AUTENTICADO -->
-
-                            <li class="nav-item dropdown">
-
-                                <a class="nav-link dropdown-toggle text-dark"
-                                   href="#"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-expanded="false">
-
-                                    @User.Identity.Name
-
-                                </a>
-
-                                <ul class="dropdown-menu dropdown-menu-end">
-
-                                    <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Account"
-                                           asp-action="ChangeUser">
-                                            Editar perfil
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Account"
-                                           asp-action="ChangePassword">
-                                            Alterar password
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <hr class="dropdown-divider" />
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item"
-                                           asp-controller="Account"
-                                           asp-action="Logout">
-                                            Terminar sessão
-                                        </a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-                        }
-                        else
-                        {
-                            <!-- UTILIZADOR NÃO AUTENTICADO -->
-
-                            <li class="nav-item">
-
-                                <a class="nav-link text-dark"
-                                   asp-controller="Account"
-                                   asp-action="Login">
-                                    Login
-                                </a>
-
-                            </li>
-
-                            <li class="nav-item">
-
-                                <a class="nav-link text-dark"
-                                   asp-controller="Account"
-                                   asp-action="Register">
-                                    Criar conta
-                                </a>
-
-                            </li>
-                        }
+                        <li class="nav-item">
+                            <a class="btn btn-primary ms-sm-2"
+                               asp-controller="Account"
+                               asp-action="Register">
+                                Criar conta
+                            </a>
+                        </li>
 
                     </ul>
 
@@ -202,36 +246,33 @@
         </nav>
     </header>
 
-
-    <!-- CONTEÚDO DAS PÁGINAS -->
-    <div class="container">
-
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-
-    </div>
+    <main class="container py-4">
+        @RenderBody()
+    </main>
+}
 
 
-    <!-- FOOTER -->
-    <footer class="border-top footer text-muted">
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
 
-        <div class="container">
-            &copy; 2026 - LifePlanner
-        </div>
-
-    </footer>
+<footer class="lp-footer">
+    © 2026 LifePlanner
+</footer>
 
 
-    <!-- SCRIPTS -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-    <script src="~/js/site.js"
-            asp-append-version="true"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="~/js/site.js"
+        asp-append-version="true"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>

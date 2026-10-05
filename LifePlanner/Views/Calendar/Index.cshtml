@@ -5,6 +5,8 @@
 
     var eventsJson = JsonSerializer.Serialize(ViewBag.Events);
     var tasksJson = JsonSerializer.Serialize(ViewBag.Tasks);
+
+    var paymentsJson = JsonSerializer.Serialize(ViewBag.Payments);
 }
 
 <div class="container mt-4">
@@ -13,7 +15,7 @@
         <div>
             <h2 class="mb-1">Calendário</h2>
             <p class="text-muted mb-0">
-                Consulte os seus eventos e prazos das tarefas.
+                Consulte os seus eventos, tarefas e pagamentos pendentes.
             </p>
         </div>
 
@@ -44,6 +46,7 @@
 
         const plannerEvents = @Html.Raw(eventsJson);
         const tasks = @Html.Raw(tasksJson);
+        const payments = @Html.Raw(paymentsJson);
 
         const calendarEvents = [];
 
@@ -76,6 +79,20 @@
             });
         });
 
+        payments.forEach(function(item) {
+            calendarEvents.push({
+                id: 'payment-' + item.id,
+                title: '💳 ' + item.title,
+                start: item.start,
+                backgroundColor: '#dc3545',
+                borderColor: '#dc3545',
+                extendedProps: {
+                    type: 'payment',
+                    originalId: item.id
+                }
+            });
+        });
+
         const calendar = new FullCalendar.Calendar(calendarElement, {
 
             initialView: 'dayGridMonth',
@@ -85,6 +102,10 @@
             firstDay: 1,
 
             height: 'auto',
+
+            displayEventTime: false,
+
+            dayMaxEvents: 3,
 
             headerToolbar: {
                 left: 'prev,next today',
@@ -113,6 +134,10 @@
                 else if (type === 'task') {
                     window.location.href =
                         '@Url.Action("Details", "Tasks")/' + id;
+                }
+                else if (type === 'payment') {
+                    window.location.href =
+                        '@Url.Action("Details", "FinancialTransactions")/' + id;
                 }
             }
         });

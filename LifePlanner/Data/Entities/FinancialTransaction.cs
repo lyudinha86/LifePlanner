@@ -24,10 +24,18 @@ namespace LifePlanner.Data.Entities
         public string? Category { get; set; }
 
 
+        [Display(Name = "Data de vencimento")]
+        [DataType(DataType.Date)]
+        public DateTime? DueDate { get; set; }
+
+        [Display(Name = "Pago")]
+        public bool IsPaid { get; set; } = true;
+
         // UTILIZADOR
         [Required]
         public string UserId { get; set; } = string.Empty;
 
         public User? User { get; set; }
+
     }
 }

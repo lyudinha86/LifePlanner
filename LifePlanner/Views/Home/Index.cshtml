@@ -1,358 +1,716 @@
 ﻿@model LifePlanner.Models.ViewModels.DashboardViewModel
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Início";
+
+    var hoje = DateTime.Today;
+    var cultura = new CultureInfo("pt-PT");
+
+    var totalTarefas = Model == null
+        ? 0
+        : Model.TarefasPendentes + Model.TarefasConcluidas;
+
+    var percentagemTarefas = totalTarefas > 0
+        ? (int)Math.Round((decimal)Model!.TarefasConcluidas / totalTarefas * 100)
+        : 0;
+
+    var diasCalendario = new List<DateTime>();
+
+    var primeiroDiaMes = new DateTime(hoje.Year, hoje.Month, 1);
+
+    var deslocamento =
+        ((int)primeiroDiaMes.DayOfWeek + 6) % 7;
+
+    var inicioCalendario =
+        primeiroDiaMes.AddDays(-deslocamento);
+
+    for (int i = 0; i < 42; i++)
+    {
+        diasCalendario.Add(inicioCalendario.AddDays(i));
+    }
 }
 
 @if (User.Identity?.IsAuthenticated == true && Model != null)
 {
-    <div class="container py-4">
+    <div class="lp-final-dashboard">
 
-        <div class="mb-4">
-            <h2 class="fw-bold">O meu LifePlanner</h2>
-            <p class="text-muted">
-                Organize o seu dia e acompanhe o que é mais importante.
-            </p>
-        </div>
+        <!-- =====================================================
+             HERO
+             ===================================================== -->
 
-        <!-- CARDS -->
-        <div class="row g-3 mb-4">
+        <section class="lp-hero">
 
-            <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <h6 class="text-muted">Tarefas pendentes</h6>
+            <div class="lp-hero-content">
+                <h1>Olá, @Model.FirstName! <span>👋</span></h1>
 
-                        <h2 class="fw-bold">
-                            @Model.TarefasPendentes
-                        </h2>
-
-                        <a asp-controller="Tasks"
-                           asp-action="Index"
-                           class="text-decoration-none">
-                            Ver tarefas →
-                        </a>
-                    </div>
-                </div>
+                <p>
+                    Organize o seu dia, alcance os seus objetivos
+                    e cuide do que é importante.
+                </p>
             </div>
 
-            <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <h6 class="text-muted">Próximos eventos</h6>
+            <div class="lp-hero-date">
+                <span>
+                    @cultura.DateTimeFormat.GetDayName(hoje.DayOfWeek)
+                </span>
 
-                        <h2 class="fw-bold">
-                            @Model.ProximosEventos
-                        </h2>
-
-                        <a asp-controller="PlannerEvents"
-                           asp-action="Index"
-                           class="text-decoration-none">
-                            Ver eventos →
-                        </a>
-                    </div>
-                </div>
+                <strong>
+                    @hoje.Day de
+                    @cultura.DateTimeFormat.GetMonthName(hoje.Month)
+                    de @hoje.Year
+                </strong>
             </div>
 
-            <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <h6 class="text-muted">Objetivos em progresso</h6>
-
-                        <h2 class="fw-bold">
-                            @Model.ObjetivosEmProgresso
-                        </h2>
-
-                        <a asp-controller="Goals"
-                           asp-action="Index"
-                           class="text-decoration-none">
-                            Ver objetivos →
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-xl-3">
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-body">
-                        <h6 class="text-muted">Saldo atual</h6>
-
-                        <h2 class="fw-bold">
-                            @Model.Saldo.ToString("N2") €
-                        </h2>
-
-                        <a asp-controller="FinancialTransactions"
-                           asp-action="Index"
-                           class="text-decoration-none">
-                            Ver finanças →
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+        </section>
 
 
-        <!-- RESUMO FINANCEIRO -->
-        <div class="card shadow-sm border-0 mb-4">
+        <!-- =====================================================
+             KPI
+             ===================================================== -->
 
-            <div class="card-body">
-
-                <h5 class="fw-bold mb-3">
-                    Resumo financeiro
-                </h5>
-
-                <div class="row">
-
-                    <div class="col-md-4">
-                        <small class="text-muted">Receitas</small>
-
-                        <div class="fs-4 fw-semibold text-success">
-                            @Model.TotalReceitas.ToString("N2") €
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <small class="text-muted">Despesas</small>
-
-                        <div class="fs-4 fw-semibold text-danger">
-                            @Model.TotalDespesas.ToString("N2") €
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <small class="text-muted">Saldo</small>
-
-                        <div class="fs-4 fw-semibold">
-                            @Model.Saldo.ToString("N2") €
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="row g-4">
+        <section class="row g-3 lp-kpi-row">
 
             <!-- TAREFAS -->
-            <div class="col-lg-6">
+            <div class="col-sm-6 col-xl-3">
 
-                <div class="card shadow-sm border-0 h-100">
+                <a asp-controller="Tasks"
+                   asp-action="Index"
+                   class="lp-kpi lp-kpi-tasks">
 
-                    <div class="card-body">
+                    <div class="lp-kpi-icon">
+                        ✓
+                    </div>
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="lp-kpi-body">
 
-                            <h5 class="fw-bold mb-0">
-                                Próximas tarefas
-                            </h5>
+                        <span>Tarefas</span>
 
-                            <a asp-controller="Tasks"
-                               asp-action="Create"
-                               class="btn btn-sm btn-outline-primary">
-                                + Nova
-                            </a>
+                        <strong>
+                            @Model.TarefasPendentes
+                        </strong>
 
+                        <small>
+                            @Model.TarefasConcluidas concluídas
+                        </small>
+
+                        <div class="lp-progress">
+                            <div style="width:@percentagemTarefas%"></div>
                         </div>
-
-                        @if (Model.TarefasRecentes.Any())
-                        {
-                            <div class="list-group list-group-flush">
-
-                                @foreach (var tarefa in Model.TarefasRecentes)
-                                {
-                                    <a asp-controller="Tasks"
-                                       asp-action="Details"
-                                       asp-route-id="@tarefa.Id"
-                                       class="list-group-item list-group-item-action px-0">
-
-                                        <div class="d-flex justify-content-between">
-
-                                            <strong>
-                                                @tarefa.Title
-                                            </strong>
-
-                                            @if (tarefa.DueDate.HasValue)
-                                            {
-                                                <small class="text-muted">
-                                                    @tarefa.DueDate.Value.ToString("dd/MM/yyyy")
-                                                </small>
-                                            }
-
-                                        </div>
-
-                                        <small class="text-muted">
-                                            @tarefa.Priority · @tarefa.Status
-                                        </small>
-
-                                    </a>
-                                }
-
-                            </div>
-                        }
-                        else
-                        {
-                            <p class="text-muted mb-0">
-                                Não existem tarefas pendentes.
-                            </p>
-                        }
 
                     </div>
 
-                </div>
+                    <span class="lp-kpi-arrow">›</span>
+
+                </a>
 
             </div>
 
 
             <!-- EVENTOS -->
-            <div class="col-lg-6">
+            <div class="col-sm-6 col-xl-3">
 
-                <div class="card shadow-sm border-0 h-100">
+                <a asp-controller="PlannerEvents"
+                   asp-action="Index"
+                   class="lp-kpi lp-kpi-events">
 
-                    <div class="card-body">
+                    <div class="lp-kpi-icon">
+                        ▦
+                    </div>
 
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="lp-kpi-body">
 
-                            <h5 class="fw-bold mb-0">
-                                Próximos eventos
-                            </h5>
+                        <span>Eventos</span>
 
-                            <a asp-controller="PlannerEvents"
-                               asp-action="Create"
-                               class="btn btn-sm btn-outline-primary">
-                                + Novo
+                        <strong>
+                            @Model.ProximosEventos
+                        </strong>
+
+                        <small>
+                            próximos eventos
+                        </small>
+
+                    </div>
+
+                    <span class="lp-kpi-arrow">›</span>
+
+                </a>
+
+            </div>
+
+
+            <!-- OBJETIVOS -->
+            <div class="col-sm-6 col-xl-3">
+
+                <a asp-controller="Goals"
+                   asp-action="Index"
+                   class="lp-kpi lp-kpi-goals">
+
+                    <div class="lp-kpi-icon">
+                        ◎
+                    </div>
+
+                    <div class="lp-kpi-body">
+
+                        <span>Objetivos</span>
+
+                        <strong>
+                            @Model.ObjetivosEmProgresso
+                        </strong>
+
+                        <small>
+                            em progresso
+                        </small>
+
+                    </div>
+
+                    <span class="lp-kpi-arrow">›</span>
+
+                </a>
+
+            </div>
+
+
+            <!-- FINANÇAS -->
+            <div class="col-sm-6 col-xl-3">
+
+                <a asp-controller="FinancialTransactions"
+                   asp-action="Index"
+                   class="lp-kpi lp-kpi-finance">
+
+                    <div class="lp-kpi-icon">
+                        €
+                    </div>
+
+                    <div class="lp-kpi-body">
+
+                        <span>Finanças</span>
+
+                        <strong class="lp-kpi-money">
+                            @Model.Saldo.ToString("N2") €
+                        </strong>
+
+                        <small>
+                            saldo este mês
+                        </small>
+
+                    </div>
+
+                    <span class="lp-kpi-arrow">›</span>
+
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             LINHA CENTRAL
+             ===================================================== -->
+
+        <section class="row g-3 mt-1">
+
+            <!-- PRÓXIMOS EVENTOS / TAREFAS -->
+            <div class="col-xl-4">
+
+                <div class="lp-widget h-100">
+
+                    <div class="lp-widget-header">
+
+                        <h3>Próximos eventos e tarefas</h3>
+
+                        <a asp-controller="Calendar"
+                           asp-action="Index">
+                            Ver todos
+                        </a>
+
+                    </div>
+
+
+                    <div class="lp-agenda-list">
+
+                        @foreach (var tarefa in Model.TarefasRecentes.Take(3))
+                        {
+                            <a asp-controller="Tasks"
+                               asp-action="Details"
+                               asp-route-id="@tarefa.Id"
+                               class="lp-agenda-item">
+
+                                <div class="lp-agenda-date">
+                                    <strong>@tarefa.DueDate!.Value.Day</strong>
+                                    <span>
+                                        @tarefa.DueDate.Value.ToString("MMM", cultura)
+                                    </span>
+                                </div>
+
+                                <span class="lp-dot lp-dot-task"></span>
+
+                                <div class="lp-agenda-info">
+                                    <strong>@tarefa.Title</strong>
+                                    <small>
+                                        Tarefa
+                                        @if (!string.IsNullOrWhiteSpace(tarefa.Priority))
+                                        {
+                                            <text> · @tarefa.Priority</text>
+                                        }
+                                    </small>
+                                </div>
+
+                                <span class="lp-agenda-more">›</span>
                             </a>
+                        }
+
+                        @foreach (var evento in Model.EventosProximos.Take(2))
+                        {
+                            <a asp-controller="PlannerEvents"
+                               asp-action="Details"
+                               asp-route-id="@evento.Id"
+                               class="lp-agenda-item">
+
+                                <div class="lp-agenda-date lp-agenda-event-date">
+                                    <strong>@evento.StartDate.Day</strong>
+                                    <span>
+                                        @evento.StartDate.ToString("MMM", cultura)
+                                    </span>
+                                </div>
+
+                                <span class="lp-dot lp-dot-event"></span>
+
+                                <div class="lp-agenda-info">
+                                    <strong>@evento.Title</strong>
+                                    <small>
+                                        Evento · @evento.StartDate.ToString("HH:mm")
+                                    </small>
+                                </div>
+
+                                <span class="lp-agenda-more">›</span>
+                            </a>
+                        }
+
+                        @if (!Model.TarefasRecentes.Any() &&
+                             !Model.EventosProximos.Any())
+                        {
+                            <div class="lp-widget-empty">
+                                Não existem tarefas ou eventos próximos.
+                            </div>
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- MINI CALENDAR -->
+            <div class="col-xl-4">
+
+                <div class="lp-widget h-100">
+
+                    <div class="lp-calendar-title">
+
+                        <span>‹</span>
+
+                        <h3>
+                            @cultura.TextInfo.ToTitleCase(
+                                cultura.DateTimeFormat
+                                    .GetMonthName(hoje.Month))
+                            de @hoje.Year
+                        </h3>
+
+                        <span>›</span>
+
+                    </div>
+
+
+                    <div class="lp-mini-calendar">
+
+                        <div class="lp-calendar-weekdays">
+                            <span>seg</span>
+                            <span>ter</span>
+                            <span>qua</span>
+                            <span>qui</span>
+                            <span>sex</span>
+                            <span>sáb</span>
+                            <span>dom</span>
+                        </div>
+
+
+                        <div class="lp-calendar-days">
+
+                            @foreach (var dia in diasCalendario)
+                            {
+                                var outroMes = dia.Month != hoje.Month;
+
+                                var temTarefa =
+                                    Model.TarefasRecentes.Any(t =>
+                                        t.DueDate.HasValue &&
+                                        t.DueDate.Value.Date == dia.Date);
+
+                                var temEvento =
+                                    Model.EventosProximos.Any(e =>
+                                        e.StartDate.Date == dia.Date);
+
+                                var temPagamento =
+                                    Model.PagamentosProximos.Any(p =>
+                                        p.DueDate.HasValue &&
+                                        p.DueDate.Value.Date == dia.Date);
+
+                                <div class="lp-calendar-day
+                                    @(outroMes ? "lp-other-month" : "")
+                                    @(dia.Date == hoje ? "lp-today" : "")">
+
+                                    <span>@dia.Day</span>
+
+                                    <div class="lp-calendar-markers">
+
+                                        @if (temEvento)
+                                        {
+                                            <i class="lp-marker-event"></i>
+                                        }
+
+                                        @if (temTarefa)
+                                        {
+                                            <i class="lp-marker-task"></i>
+                                        }
+
+                                        @if (temPagamento)
+                                        {
+                                            <i class="lp-marker-payment"></i>
+                                        }
+
+                                    </div>
+
+                                </div>
+                            }
 
                         </div>
 
-                        @if (Model.EventosProximos.Any())
+                    </div>
+
+
+                    <div class="lp-calendar-legend">
+
+                        <span>
+                            <i class="lp-marker-event"></i>
+                            Eventos
+                        </span>
+
+                        <span>
+                            <i class="lp-marker-task"></i>
+                            Tarefas
+                        </span>
+
+                        <span>
+                            <i class="lp-marker-payment"></i>
+                            Pagamentos
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRÓXIMOS PAGAMENTOS -->
+            <div class="col-xl-4">
+
+                <div class="lp-widget h-100">
+
+                    <div class="lp-widget-header">
+
+                        <h3>Próximos pagamentos</h3>
+
+                        <a asp-controller="FinancialTransactions"
+                           asp-action="Index">
+                            Ver todos
+                        </a>
+
+                    </div>
+
+
+                    <div class="lp-payment-list">
+
+                        @if (Model.PagamentosProximos.Any())
                         {
-                            <div class="list-group list-group-flush">
+                            @foreach (var pagamento in Model.PagamentosProximos.Take(5))
+                            {
+                                <a asp-controller="FinancialTransactions"
+                                   asp-action="Details"
+                                   asp-route-id="@pagamento.Id"
+                                   class="lp-payment-item">
 
-                                @foreach (var evento in Model.EventosProximos)
-                                {
-                                    <a asp-controller="PlannerEvents"
-                                       asp-action="Details"
-                                       asp-route-id="@evento.Id"
-                                       class="list-group-item list-group-item-action px-0">
+                                    <span class="lp-payment-icon">
+                                        €
+                                    </span>
 
-                                        <div class="d-flex justify-content-between">
+                                    <span class="lp-payment-info">
 
-                                            <strong>
-                                                @evento.Title
-                                            </strong>
+                                        <strong>
+                                            @pagamento.Description
+                                        </strong>
 
-                                            <small class="text-muted">
-                                                @evento.StartDate.ToString("dd/MM/yyyy HH:mm")
-                                            </small>
+                                        <small>
+                                            @pagamento.DueDate?.ToString("dd MMM yyyy", cultura)
+                                        </small>
 
-                                        </div>
+                                    </span>
 
-                                        @if (!string.IsNullOrWhiteSpace(evento.Location))
-                                        {
-                                            <small class="text-muted">
-                                                @evento.Location
-                                            </small>
-                                        }
+                                    <strong class="lp-payment-value">
+                                        @pagamento.Amount.ToString("N2") €
+                                    </strong>
 
-                                    </a>
-                                }
-
-                            </div>
+                                </a>
+                            }
                         }
                         else
                         {
-                            <p class="text-muted mb-0">
-                                Não existem próximos eventos.
-                            </p>
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- OBJETIVOS -->
-        <div class="card shadow-sm border-0 mt-4">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-
-                    <h5 class="fw-bold mb-0">
-                        Objetivos em progresso
-                    </h5>
-
-                    <a asp-controller="Goals"
-                       asp-action="Create"
-                       class="btn btn-sm btn-outline-primary">
-                        + Novo objetivo
-                    </a>
-
-                </div>
-
-                @if (Model.ObjetivosRecentes.Any())
-                {
-                    <div class="row g-3">
-
-                        @foreach (var objetivo in Model.ObjetivosRecentes)
-                        {
-                            <div class="col-md-6 col-lg-4">
-
-                                <div class="border rounded p-3 h-100">
-
-                                    <h6 class="fw-bold">
-                                        @objetivo.Title
-                                    </h6>
-
-                                    <div class="text-muted small mb-2">
-                                        Estado: @objetivo.Status
-                                    </div>
-
-                                    @if (objetivo.DueDate.HasValue)
-                                    {
-                                        <div class="small mb-3">
-                                            Data limite:
-                                            @objetivo.DueDate.Value.ToString("dd/MM/yyyy")
-                                        </div>
-                                    }
-
-                                    <a asp-controller="Goals"
-                                       asp-action="Details"
-                                       asp-route-id="@objetivo.Id"
-                                       class="text-decoration-none">
-                                        Ver detalhes →
-                                    </a>
-
-                                </div>
-
+                            <div class="lp-widget-empty lp-payment-empty">
+                                <span>✓</span>
+                                <strong>Sem pagamentos pendentes</strong>
+                                <small>Não existem pagamentos por pagar.</small>
                             </div>
                         }
 
                     </div>
-                }
-                else
-                {
-                    <p class="text-muted mb-0">
-                        Não existem objetivos em progresso.
-                    </p>
-                }
+
+                </div>
 
             </div>
 
-        </div>
+        </section>
+
+
+        <!-- =====================================================
+             LINHA INFERIOR
+             ===================================================== -->
+
+        <section class="row g-3 mt-1">
+
+            <!-- RESUMO FINANCEIRO -->
+            <div class="col-xl-4">
+
+                <div class="lp-widget h-100">
+
+                    <div class="lp-widget-header">
+
+                        <h3>
+                            Resumo de finanças
+                            <small>
+                                (@cultura.DateTimeFormat.GetMonthName(hoje.Month)
+                                @hoje.Year)
+                            </small>
+                        </h3>
+
+                        <a asp-controller="FinancialTransactions"
+                           asp-action="Index">
+                            Ver detalhes
+                        </a>
+
+                    </div>
+
+
+                    <div class="lp-finance-summary">
+
+                        <div class="lp-finance-mini lp-finance-green">
+
+                            <span class="lp-finance-mini-icon">↑</span>
+
+                            <div>
+                                <small>Receitas</small>
+
+                                <strong>
+                                    @Model.TotalReceitas.ToString("N2") €
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="lp-finance-mini lp-finance-red">
+
+                            <span class="lp-finance-mini-icon">↓</span>
+
+                            <div>
+                                <small>Despesas</small>
+
+                                <strong>
+                                    @Model.TotalDespesas.ToString("N2") €
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="lp-finance-mini lp-finance-blue">
+
+                            <span class="lp-finance-mini-icon">€</span>
+
+                            <div>
+                                <small>Saldo</small>
+
+                                <strong>
+                                    @Model.Saldo.ToString("N2") €
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CATEGORIAS -->
+            <div class="col-xl-4">
+
+                <div class="lp-widget h-100">
+
+                    <div class="lp-widget-header">
+
+                        <h3>Despesas por categoria</h3>
+
+                        <a asp-controller="FinancialTransactions"
+                           asp-action="Index">
+                            Ver detalhes
+                        </a>
+
+                    </div>
+
+
+                    @if (Model.DespesasPorCategoria.Any())
+                    {
+                        var primeiraCategoria =
+                            Model.DespesasPorCategoria.First();
+
+                        <div class="lp-category-content">
+
+                            <div class="lp-donut">
+                                <div>
+                                    <strong>
+                                        @Model.TotalDespesas.ToString("N2") €
+                                    </strong>
+                                    <small>Total</small>
+                                </div>
+                            </div>
+
+
+                            <div class="lp-category-list">
+
+                                @foreach (var categoria in
+                                    Model.DespesasPorCategoria.Take(4))
+                                {
+                                    <div class="lp-category-row">
+
+                                        <span class="lp-category-name">
+                                            <i></i>
+                                            @categoria.Categoria
+                                        </span>
+
+                                        <span>
+                                            @categoria.Total.ToString("N2") €
+                                        </span>
+
+                                        <strong>
+                                            @categoria.Percentagem.ToString("N0")%
+                                        </strong>
+
+                                    </div>
+                                }
+
+                            </div>
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="lp-widget-empty">
+                            Ainda não existem despesas neste mês.
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- OBJETIVOS -->
+            <div class="col-xl-4">
+
+                <div class="lp-widget h-100">
+
+                    <div class="lp-widget-header">
+
+                        <h3>Objetivos em progresso</h3>
+
+                        <a asp-controller="Goals"
+                           asp-action="Index">
+                            Ver todos
+                        </a>
+
+                    </div>
+
+
+                    <div class="lp-goals-list">
+
+                        @if (Model.ObjetivosRecentes.Any())
+                        {
+                            @foreach (var objetivo in Model.ObjetivosRecentes.Take(4))
+                            {
+                                <a asp-controller="Goals"
+                                   asp-action="Details"
+                                   asp-route-id="@objetivo.Id"
+                                   class="lp-goal-row">
+
+                                    <span class="lp-goal-symbol">
+                                        ◎
+                                    </span>
+
+                                    <span class="lp-goal-info">
+
+                                        <strong>
+                                            @objetivo.Title
+                                        </strong>
+
+                                        <span class="lp-goal-progress">
+                                            <i></i>
+                                        </span>
+
+                                    </span>
+
+                                    <span class="lp-goal-status">
+                                        @objetivo.Status
+                                    </span>
+
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <div class="lp-widget-empty">
+                                Não existem objetivos em progresso.
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
 
     </div>
 }
 else
 {
+    <!-- =====================================================
+         PÁGINA PÚBLICA
+         ===================================================== -->
+
     <div class="text-center py-5">
 
         <h1 class="display-4 fw-bold">
@@ -360,7 +718,8 @@ else
         </h1>
 
         <p class="lead text-muted">
-            Organize as suas tarefas, eventos, objetivos e finanças num único lugar.
+            Organize as suas tarefas, eventos,
+            objetivos e finanças num único lugar.
         </p>
 
         <div class="mt-4">

@@ -126,6 +126,19 @@ namespace LifePlanner.Controllers
                 return View(transaction);
             }
 
+            // Validar pagamento pendente
+            if (!transaction.IsPaid && !transaction.DueDate.HasValue)
+            {
+                ModelState.AddModelError(
+                    nameof(FinancialTransaction.DueDate),
+                    "Indique a data de vencimento.");
+            }
+
+            // Um movimento pago não necessita de data de vencimento
+            if (transaction.IsPaid)
+            {
+                transaction.DueDate = null;
+            }
 
             var user = await GetCurrentUserAsync();
 
@@ -220,6 +233,19 @@ namespace LifePlanner.Controllers
                 return View(model);
             }
 
+            // Validar pagamento pendente
+            if (!model.IsPaid && !model.DueDate.HasValue)
+            {
+                ModelState.AddModelError(
+                    nameof(FinancialTransaction.DueDate),
+                    "Indique a data de vencimento.");
+            }
+
+            if (model.IsPaid)
+            {
+                model.DueDate = null;
+            }
+
 
             var user = await GetCurrentUserAsync();
 
@@ -250,6 +276,8 @@ namespace LifePlanner.Controllers
             transaction.Amount = model.Amount;
             transaction.TransactionDate = model.TransactionDate;
             transaction.Category = model.Category;
+            transaction.DueDate = model.DueDate;
+            transaction.IsPaid = model.IsPaid;
 
             // UserId não é alterado
 

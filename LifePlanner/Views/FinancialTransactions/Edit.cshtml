@@ -97,6 +97,36 @@
                           class="text-danger"></span>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Estado do pagamento</label>
+
+                    <select asp-for="IsPaid"
+                            id="paymentStatus"
+                            class="form-select">
+                        <option value="true">Pago</option>
+                        <option value="false">Por pagar</option>
+                    </select>
+
+                    <span asp-validation-for="IsPaid"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3"
+                     id="dueDateContainer">
+
+                    <label asp-for="DueDate"
+                           class="form-label">
+                        Data de vencimento
+                    </label>
+
+                    <input asp-for="DueDate"
+                           type="date"
+                           class="form-control" />
+
+                    <span asp-validation-for="DueDate"
+                          class="text-danger"></span>
+                </div>
+
                 <button type="submit"
                         class="btn btn-primary">
                     Guardar alterações
@@ -117,4 +147,32 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const paymentStatus =
+                document.getElementById("paymentStatus");
+
+            const dueDateContainer =
+                document.getElementById("dueDateContainer");
+
+            function updateDueDateVisibility() {
+
+                if (paymentStatus.value === "false") {
+                    dueDateContainer.style.display = "block";
+                }
+                else {
+                    dueDateContainer.style.display = "none";
+                }
+            }
+
+            paymentStatus.addEventListener(
+                "change",
+                updateDueDateVisibility
+            );
+
+            updateDueDateVisibility();
+        });
+    </script>
 }
