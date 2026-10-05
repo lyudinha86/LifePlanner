@@ -326,7 +326,19 @@ namespace LifePlanner.Controllers
                 return NotFound();
             }
 
-            await _repository.DeleteAsync(plannerEvent);
+            try
+            {
+                await _repository.DeleteAsync(plannerEvent);
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Não foi possível eliminar este evento.");
+
+                return View("Delete", plannerEvent);
+            }
+
 
             return RedirectToAction(nameof(Index));
         }

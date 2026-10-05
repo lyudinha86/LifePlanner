@@ -152,7 +152,19 @@ namespace LifePlanner.Controllers
 
 
             // Criar relações entre tarefa e tags
-            foreach (var tagId in model.SelectedTagIds.Distinct())
+            var selectedTagIds = model.SelectedTagIds
+            .Distinct()
+            .ToList();
+
+            var validTagIds = await _tagRepository
+                .GetAll()
+                .Where(t =>
+                    t.UserId == user.Id &&
+                    selectedTagIds.Contains(t.Id))
+                .Select(t => t.Id)
+                .ToListAsync();
+
+            foreach (var tagId in validTagIds)
             {
                 var taskTag = new TaskTag
                 {
@@ -205,6 +217,7 @@ namespace LifePlanner.Controllers
 
             var tags = await _tagRepository
                 .GetAll()
+                .Where(t => t.UserId == user.Id)
                 .OrderBy(t => t.Name)
                 .ToListAsync();
 
@@ -323,8 +336,18 @@ namespace LifePlanner.Controllers
 
 
             var selectedTagIds = model.SelectedTagIds
-                .Distinct()
-                .ToList();
+            .Distinct()
+            .ToList();
+
+            var validTagIds = await _tagRepository
+                .GetAll()
+                .Where(t =>
+                    t.UserId == user.Id &&
+                    selectedTagIds.Contains(t.Id))
+                .Select(t => t.Id)
+                .ToListAsync();
+
+            selectedTagIds = validTagIds;
 
 
             // Eliminar associações que foram desmarcadas
@@ -510,6 +533,7 @@ namespace LifePlanner.Controllers
 
             model.Tags = await _tagRepository
                 .GetAll()
+                .Where(t => t.UserId == user.Id)
                 .OrderBy(t => t.Name)
                 .ToListAsync();
         }

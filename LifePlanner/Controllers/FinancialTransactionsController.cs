@@ -372,7 +372,18 @@ namespace LifePlanner.Controllers
             }
 
 
-            await _repository.DeleteAsync(transaction);
+            try
+            {
+                await _repository.DeleteAsync(transaction);
+            }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError(
+                    string.Empty,
+                    "Não foi possível eliminar este movimento.");
+
+                return View("Delete", transaction);
+            }
 
             return RedirectToAction(nameof(Index));
         }

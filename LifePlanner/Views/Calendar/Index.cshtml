@@ -1,0 +1,122 @@
+﻿@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Calendário";
+
+    var eventsJson = JsonSerializer.Serialize(ViewBag.Events);
+    var tasksJson = JsonSerializer.Serialize(ViewBag.Tasks);
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">Calendário</h2>
+            <p class="text-muted mb-0">
+                Consulte os seus eventos e prazos das tarefas.
+            </p>
+        </div>
+
+        <a asp-controller="PlannerEvents"
+           asp-action="Create"
+           class="btn btn-primary">
+            + Novo evento
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+    </div>
+
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css"
+      rel="stylesheet" />
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const calendarElement = document.getElementById('calendar');
+
+        const plannerEvents = @Html.Raw(eventsJson);
+        const tasks = @Html.Raw(tasksJson);
+
+        const calendarEvents = [];
+
+        plannerEvents.forEach(function(item) {
+            calendarEvents.push({
+                id: 'event-' + item.id,
+                title: item.title,
+                start: item.start,
+                end: item.end,
+                backgroundColor: '#0d6efd',
+                borderColor: '#0d6efd',
+                extendedProps: {
+                    type: 'event',
+                    originalId: item.id
+                }
+            });
+        });
+
+        tasks.forEach(function(item) {
+            calendarEvents.push({
+                id: 'task-' + item.id,
+                title: '✓ ' + item.title,
+                start: item.start,
+                backgroundColor: '#198754',
+                borderColor: '#198754',
+                extendedProps: {
+                    type: 'task',
+                    originalId: item.id
+                }
+            });
+        });
+
+        const calendar = new FullCalendar.Calendar(calendarElement, {
+
+            initialView: 'dayGridMonth',
+
+            locale: 'pt',
+
+            firstDay: 1,
+
+            height: 'auto',
+
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listMonth'
+            },
+
+            buttonText: {
+                today: 'Hoje',
+                month: 'Mês',
+                week: 'Semana',
+                list: 'Lista'
+            },
+
+            events: calendarEvents,
+
+            eventClick: function(info) {
+
+                const type = info.event.extendedProps.type;
+                const id = info.event.extendedProps.originalId;
+
+                if (type === 'event') {
+                    window.location.href =
+                        '@Url.Action("Details", "PlannerEvents")/' + id;
+                }
+                else if (type === 'task') {
+                    window.location.href =
+                        '@Url.Action("Details", "Tasks")/' + id;
+                }
+            }
+        });
+
+        calendar.render();
+    });
+</script>
