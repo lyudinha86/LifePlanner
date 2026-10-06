@@ -1,0 +1,367 @@
+﻿@model LifePlanner.Models.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Administração";
+}
+
+<div class="lp-admin-dashboard">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+    <div class="lp-page-header">
+        <div>
+            <h1>Administração</h1>
+            <p>
+                Visão geral e atividade do sistema LifePlanner.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- =====================================================
+         CARDS / RESUMO
+         ===================================================== -->
+    <div class="row g-3">
+
+        <!-- UTILIZADORES -->
+        <div class="col-md-6 col-xl">
+            <div class="lp-admin-card lp-admin-users">
+
+                <div class="lp-admin-icon">
+                    👤
+                </div>
+
+                <div>
+                    <span>Utilizadores</span>
+                    <strong>@Model.TotalUtilizadores</strong>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- TAREFAS -->
+        <div class="col-md-6 col-xl">
+            <div class="lp-admin-card lp-admin-tasks">
+
+                <div class="lp-admin-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Tarefas</span>
+                    <strong>@Model.TotalTarefas</strong>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- EVENTOS -->
+        <div class="col-md-6 col-xl">
+            <div class="lp-admin-card lp-admin-events">
+
+                <div class="lp-admin-icon">
+                    ▦
+                </div>
+
+                <div>
+                    <span>Eventos</span>
+                    <strong>@Model.TotalEventos</strong>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- OBJETIVOS -->
+        <div class="col-md-6 col-xl">
+            <div class="lp-admin-card lp-admin-goals">
+
+                <div class="lp-admin-icon">
+                    ◎
+                </div>
+
+                <div>
+                    <span>Objetivos</span>
+                    <strong>@Model.TotalObjetivos</strong>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- TAGS -->
+        <div class="col-md-6 col-xl">
+            <div class="lp-admin-card lp-admin-tags">
+
+                <div class="lp-admin-icon">
+                    #
+                </div>
+
+                <div>
+                    <span>Tags</span>
+                    <strong>@Model.TotalTags</strong>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         GRÁFICO + UTILIZADORES
+         ===================================================== -->
+    <div class="row g-4 mt-2">
+
+
+        <!-- =================================================
+             ESTADO DAS TAREFAS
+             ================================================= -->
+        <div class="col-lg-5">
+
+            <div class="lp-admin-widget">
+
+                <div class="lp-admin-widget-header">
+
+                    <div>
+                        <h3>Estado das tarefas</h3>
+
+                        <p>
+                            Distribuição das tarefas no sistema.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- GRÁFICO -->
+                <div class="lp-admin-chart">
+
+                    <canvas id="tasksChart"></canvas>
+
+                </div>
+
+
+                <!-- LEGENDA -->
+                <div class="lp-admin-chart-legend">
+
+                    <div>
+                        <span class="lp-dot pending"></span>
+
+                        <span>Pendentes</span>
+
+                        <strong>
+                            @Model.TarefasPendentes
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span class="lp-dot progress"></span>
+
+                        <span>Em progresso</span>
+
+                        <strong>
+                            @Model.TarefasEmProgresso
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span class="lp-dot completed"></span>
+
+                        <span>Concluídas</span>
+
+                        <strong>
+                            @Model.TarefasConcluidas
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             UTILIZADORES
+             ================================================= -->
+        <div class="col-lg-7">
+
+            <div class="lp-admin-widget">
+
+                <div class="lp-admin-widget-header">
+
+                    <div>
+                        <h3>Utilizadores</h3>
+
+                        <p>
+                            Utilizadores registados no LifePlanner.
+                        </p>
+                    </div>
+
+
+                    <span class="lp-admin-total">
+                        @Model.TotalUtilizadores total
+                    </span>
+
+                </div>
+
+
+                <!-- LISTA -->
+                <div class="lp-admin-users-list">
+
+                    @if (Model.Utilizadores != null &&
+                         Model.Utilizadores.Any())
+                    {
+                        @foreach (var user in Model.Utilizadores)
+                        {
+                            <div class="lp-admin-user">
+
+                                <div class="lp-admin-user-avatar">
+                                    @(string.IsNullOrWhiteSpace(user.FirstName)
+                                        ? "U"
+                                        : user.FirstName.Substring(0, 1).ToUpper())
+                                </div>
+
+                                <div class="lp-admin-user-info">
+
+                                    <strong>
+                                        @user.FirstName @user.LastName
+                                    </strong>
+
+                                    <span>
+                                        @user.Email
+                                    </span>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="lp-admin-empty">
+
+                            Não existem utilizadores registados.
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESUMO DO SISTEMA
+         ===================================================== -->
+    <div class="lp-admin-info">
+
+        <div>
+
+            <h3>Resumo do sistema</h3>
+
+            <p>
+                O LifePlanner tem atualmente
+                <strong>@Model.TotalUtilizadores</strong> utilizadores,
+                <strong>@Model.TotalTarefas</strong> tarefas,
+                <strong>@Model.TotalEventos</strong> eventos,
+                <strong>@Model.TotalObjetivos</strong> objetivos
+                e <strong>@Model.TotalTags</strong> tags.
+            </p>
+
+        </div>
+
+
+        <span>
+            Sistema ativo
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHART.JS
+     ========================================================= -->
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        const tasksChartElement =
+            document.getElementById('tasksChart');
+
+
+        if (tasksChartElement) {
+
+            new Chart(
+                tasksChartElement,
+                {
+                    type: 'doughnut',
+
+                    data: {
+
+                        labels: [
+                            'Pendentes',
+                            'Em progresso',
+                            'Concluídas'
+                        ],
+
+                        datasets: [
+                            {
+                                data: [
+                                            @Model.TarefasPendentes,
+                                            @Model.TarefasEmProgresso,
+                                    @Model.TarefasConcluidas
+                                ],
+
+                                backgroundColor: [
+                                    '#f3b45b',
+                                    '#6d8df7',
+                                    '#45bf91'
+                                ],
+
+                                borderWidth: 0,
+
+                                hoverOffset: 5
+                            }
+                        ]
+                    },
+
+                    options: {
+
+                        responsive: true,
+
+                        maintainAspectRatio: false,
+
+                        cutout: '72%',
+
+                        plugins: {
+
+                            legend: {
+                                display: false
+                            },
+
+                            tooltip: {
+                                enabled: true
+                            }
+                        }
+                    }
+                }
+            );
+        }
+
+    </script>
+}

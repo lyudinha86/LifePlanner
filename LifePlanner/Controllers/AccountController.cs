@@ -2,6 +2,7 @@
 using LifePlanner.Helpers;
 using LifePlanner.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LifePlanner.Controllers
@@ -18,16 +19,26 @@ namespace LifePlanner.Controllers
 
         // LOGIN - GET
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
+            if (User.Identity != null &&
+                User.Identity.IsAuthenticated &&
+                User.Identity.Name != null)
             {
+                var user = await _userHelper
+                    .GetUserByEmailAsync(User.Identity.Name);
+
+                if (user != null &&
+                    await _userHelper.IsUserInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+
                 return RedirectToAction("Index", "Home");
             }
 
             return View();
         }
-
 
         // LOGIN - POST
         [HttpPost]
@@ -40,9 +51,16 @@ namespace LifePlanner.Controllers
             }
 
             var result = await _userHelper.LoginAsync(model);
-
             if (result.Succeeded)
             {
+                var user = await _userHelper.GetUserByEmailAsync(model.Username);
+
+                if (user != null &&
+                    await _userHelper.IsUserInRoleAsync(user, "Admin"))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+
                 return RedirectToAction("Index", "Home");
             }
 

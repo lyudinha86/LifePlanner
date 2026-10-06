@@ -31,85 +31,109 @@
              ===================================================== -->
         <aside class="lp-sidebar">
 
-            <a class="lp-logo"
-               asp-controller="Home"
-               asp-action="Index">
+           @if (User.IsInRole("Admin"))
+    {
+        <a class="lp-logo"
+           asp-controller="Admin"
+           asp-action="Index">
+    
+            <span class="lp-logo-icon">◆</span>
+            <span>LifePlanner</span>
+        </a>
+    }
+    else
+    {
+    <a class="lp-logo"
+       asp-controller="Home"
+       asp-action="Index">
 
-                <span class="lp-logo-icon">◆</span>
-                <span>LifePlanner</span>
-
-            </a>
+        <span class="lp-logo-icon">◆</span>
+        <span>LifePlanner</span>
+    </a>
+    }
 
             <nav class="lp-sidebar-nav">
 
-                <a class="lp-menu-link"
-                   asp-controller="Home"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">⌂</span>
-                    <span>Início</span>
-                </a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a class="lp-menu-link"
+           asp-controller="Admin"
+           asp-action="Index">
+            <span class="lp-menu-icon">⚙</span>
+            <span>Administração</span>
+        </a>
+    }
+    else
+    {
+        <a class="lp-menu-link"
+           asp-controller="Home"
+           asp-action="Index">
+            <span class="lp-menu-icon">⌂</span>
+            <span>Início</span>
+        </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="Tasks"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">✓</span>
-                    <span>Tarefas</span>
-                </a>
+        <a class="lp-menu-link"
+           asp-controller="Tasks"
+           asp-action="Index">
+            <span class="lp-menu-icon">✓</span>
+            <span>Tarefas</span>
+        </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="Calendar"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">▣</span>
-                    <span>Calendário</span>
-                </a>
+        <a class="lp-menu-link"
+           asp-controller="Calendar"
+           asp-action="Index">
+            <span class="lp-menu-icon">▣</span>
+            <span>Calendário</span>
+        </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="Goals"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">◎</span>
-                    <span>Objetivos</span>
-                </a>
+        <a class="lp-menu-link"
+           asp-controller="Goals"
+           asp-action="Index">
+            <span class="lp-menu-icon">◎</span>
+            <span>Objetivos</span>
+        </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="PlannerEvents"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">◷</span>
-                    <span>Eventos</span>
-                </a>
+        <a class="lp-menu-link"
+           asp-controller="PlannerEvents"
+           asp-action="Index">
+            <span class="lp-menu-icon">◷</span>
+            <span>Eventos</span>
+        </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="FinancialTransactions"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">€</span>
-                    <span>Finanças</span>
-                </a>
+        <a class="lp-menu-link"
+           asp-controller="FinancialTransactions"
+           asp-action="Index">
+            <span class="lp-menu-icon">€</span>
+            <span>Finanças</span>
+        </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="Tags"
-                   asp-action="Index">
-                    <span class="lp-menu-icon">#</span>
-                    <span>Tags</span>
-                </a>
+        <a class="lp-menu-link"
+           asp-controller="Tags"
+           asp-action="Index">
+            <span class="lp-menu-icon">#</span>
+            <span>Tags</span>
+        </a>
+    }
 
-            </nav>
+</nav>
 
-            <div class="lp-sidebar-bottom">
+<div class="lp-sidebar-bottom">
 
-                <a class="lp-menu-link"
-                   asp-controller="Account"
-                   asp-action="ChangeUser">
-                    <span class="lp-menu-icon">○</span>
-                    <span>Perfil</span>
-                </a>
+    <a class="lp-menu-link"
+       asp-controller="Account"
+       asp-action="ChangeUser">
+        <span class="lp-menu-icon">○</span>
+        <span>Perfil</span>
+    </a>
 
-                <a class="lp-menu-link"
-                   asp-controller="Account"
-                   asp-action="ChangePassword">
-                    <span class="lp-menu-icon">⚙</span>
-                    <span>Alterar password</span>
-                </a>
+    <a class="lp-menu-link"
+       asp-controller="Account"
+       asp-action="ChangePassword">
+        <span class="lp-menu-icon">⚙</span>
+        <span>Alterar password</span>
+    </a>
 
-            </div>
+</div>
 
         </aside>
 

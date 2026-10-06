@@ -38,6 +38,11 @@ namespace LifePlanner.Controllers
                 return View();
             }
 
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
             var user = await _userHelper
                 .GetUserByEmailAsync(User.Identity!.Name!);
 

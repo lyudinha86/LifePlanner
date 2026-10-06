@@ -54,4 +54,32 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager =
+        scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var userManager =
+        scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+    // Criar role Admin
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(
+            new IdentityRole("Admin"));
+    }
+
+    // Definir o utilizador administrador
+    var adminUser = await userManager.FindByEmailAsync(
+        "oeirascity7@gmail.com");
+
+    if (adminUser != null &&
+        !await userManager.IsInRoleAsync(adminUser, "Admin"))
+    {
+        await userManager.AddToRoleAsync(
+            adminUser,
+            "Admin");
+    }
+}
+
 app.Run();
