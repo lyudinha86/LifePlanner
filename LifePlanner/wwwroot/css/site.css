@@ -2376,3 +2376,198 @@ html {
     text-align: center;
     color: #9aa8b8;
 }
+
+/* =========================================================
+   LIFEPLANNER - PUBLIC HOME
+   ========================================================= */
+
+.lp-public-home {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 65px 24px 35px;
+}
+
+.lp-public-hero {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.lp-public-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    margin-bottom: 18px;
+    border-radius: 20px;
+    background: #e9f2ff;
+    color: #4a78b8;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.lp-public-hero h1 {
+    margin: 0;
+    color: #18375e;
+    font-size: clamp(3rem, 6vw, 4.3rem);
+    line-height: 1;
+    font-weight: 800;
+    letter-spacing: -2px;
+}
+
+.lp-public-hero > p {
+    max-width: 650px;
+    margin: 20px auto 0;
+    color: #8495aa;
+    font-size: 1.15rem;
+    line-height: 1.7;
+}
+
+.lp-public-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 27px;
+}
+
+    .lp-public-actions .btn {
+        min-width: 112px;
+        padding: 10px 19px;
+        border-radius: 9px;
+        font-weight: 650;
+    }
+
+
+/* FEATURES */
+
+.lp-public-features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 65px;
+}
+
+.lp-public-feature {
+    min-height: 175px;
+    padding: 23px;
+    border: 1px solid #e6ecf3;
+    border-radius: 17px;
+    background: #fff;
+    box-shadow: 0 5px 20px rgba(31, 57, 89, .045);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+    .lp-public-feature:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(31, 57, 89, .08);
+    }
+
+.lp-public-feature-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 17px;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.lp-public-feature h3 {
+    margin: 0 0 7px;
+    color: #294761;
+    font-size: .95rem;
+    font-weight: 750;
+}
+
+.lp-public-feature p {
+    margin: 0;
+    color: #8494a7;
+    font-size: .78rem;
+    line-height: 1.6;
+}
+
+
+/* CORES */
+
+.lp-public-feature-tasks .lp-public-feature-icon {
+    background: #e5f7ef;
+    color: #26996d;
+}
+
+.lp-public-feature-events .lp-public-feature-icon {
+    background: #e5f0ff;
+    color: #397bd8;
+}
+
+.lp-public-feature-goals .lp-public-feature-icon {
+    background: #eee9ff;
+    color: #8064d9;
+}
+
+.lp-public-feature-finance .lp-public-feature-icon {
+    background: #fff0dc;
+    color: #d78c2d;
+}
+
+
+/* BOTTOM */
+
+.lp-public-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 38px;
+    padding-top: 24px;
+    border-top: 1px solid #e4eaf1;
+    color: #7e90a5;
+    font-size: .78rem;
+}
+
+    .lp-public-bottom > span {
+        color: #526c87;
+        font-weight: 650;
+    }
+
+    .lp-public-bottom div {
+        display: flex;
+        gap: 20px;
+    }
+
+        .lp-public-bottom div span {
+            color: #7890a7;
+        }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+    .lp-public-features {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+
+    .lp-public-home {
+        padding: 40px 16px 25px;
+    }
+
+    .lp-public-features {
+        grid-template-columns: 1fr;
+        margin-top: 45px;
+    }
+
+    .lp-public-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .lp-public-bottom div {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+}

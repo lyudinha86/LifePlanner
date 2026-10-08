@@ -711,32 +711,123 @@ else
          PÁGINA PÚBLICA
          ===================================================== -->
 
-    <div class="text-center py-5">
+    <div class="lp-public-home">
 
-        <h1 class="display-4 fw-bold">
-            LifePlanner
-        </h1>
+        <section class="lp-public-hero">
 
-        <p class="lead text-muted">
-            Organize as suas tarefas, eventos,
-            objetivos e finanças num único lugar.
-        </p>
+            <span class="lp-public-badge">
+                O seu dia. Mais simples.
+            </span>
 
-        <div class="mt-4">
+            <h1>LifePlanner</h1>
 
-            <a asp-controller="Account"
-               asp-action="Login"
-               class="btn btn-primary me-2">
-                Entrar
-            </a>
+            <p>
+                Organize as suas tarefas, eventos, objetivos
+                e finanças num único lugar.
+            </p>
 
-            <a asp-controller="Account"
-               asp-action="Register"
-               class="btn btn-outline-primary">
-                Criar conta
-            </a>
+            <div class="lp-public-actions">
 
-        </div>
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="btn btn-primary">
+                    Entrar
+                </a>
+
+                <a asp-controller="Account"
+                   asp-action="Register"
+                   class="btn btn-outline-primary">
+                    Criar conta
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <section class="lp-public-features">
+
+            <div class="lp-public-feature lp-public-feature-tasks">
+
+                <div class="lp-public-feature-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h3>Tarefas</h3>
+                    <p>
+                        Organize prioridades e acompanhe
+                        o que precisa de fazer.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="lp-public-feature lp-public-feature-events">
+
+                <div class="lp-public-feature-icon">
+                    ▦
+                </div>
+
+                <div>
+                    <h3>Eventos</h3>
+                    <p>
+                        Planeie compromissos e mantenha
+                        a sua agenda organizada.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="lp-public-feature lp-public-feature-goals">
+
+                <div class="lp-public-feature-icon">
+                    ◎
+                </div>
+
+                <div>
+                    <h3>Objetivos</h3>
+                    <p>
+                        Defina as suas metas e acompanhe
+                        o seu progresso.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="lp-public-feature lp-public-feature-finance">
+
+                <div class="lp-public-feature-icon">
+                    €
+                </div>
+
+                <div>
+                    <h3>Finanças</h3>
+                    <p>
+                        Controle receitas, despesas
+                        e próximos pagamentos.
+                    </p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="lp-public-bottom">
+
+            <span>Tudo o que precisa para organizar o seu dia.</span>
+
+            <div>
+                <span>✓ Simples</span>
+                <span>✓ Organizado</span>
+                <span>✓ Pessoal</span>
+            </div>
+
+        </section>
 
     </div>
 }
